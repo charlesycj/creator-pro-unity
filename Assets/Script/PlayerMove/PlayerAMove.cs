@@ -12,6 +12,7 @@ public class PlayerAMove : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
     }
 
+
     void FixedUpdate()
     {
         // A와 D 키 입력으로 이동
@@ -26,16 +27,7 @@ public class PlayerAMove : MonoBehaviour
             h = 1; // 오른쪽으로 이동
         }
 
-        rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
-
-        // 최대 속도 제한
-        if (rigid.velocity.x > maxSpeed) // 오른쪽 최대 속도
-        {
-            rigid.velocity = new Vector2(maxSpeed, rigid.velocity.y);
-        }
-        else if (rigid.velocity.x < -maxSpeed) // 왼쪽 최대 속도
-        {
-            rigid.velocity = new Vector2(-maxSpeed, rigid.velocity.y);
-        }
+        // 속도 설정 (미끄러짐 방지)
+        rigid.velocity = new Vector2(h * maxSpeed, rigid.velocity.y);
     }
 }
