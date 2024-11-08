@@ -19,7 +19,7 @@ public class ObjectDown : MonoBehaviour
         // 시간 3초가 경과할 때마다 spawnInterval을 0.1씩 감소
         timeElapsed += Time.deltaTime;
 
-        if (timeElapsed >= 3f) //3초가 지날때마다
+        if (timeElapsed >= 3f &&spawnInterval!=0.01) //3초가 지날때마다
         {
             spawnInterval -= 0.01f; // spawnInterval을 0.01씩 감소 (오프젝트 생성속도)
             initialSpeed += 0.3f;   // 오브젝트의 속도를 0.3씩 증가시킴 (오프젝트의 이동속도)
