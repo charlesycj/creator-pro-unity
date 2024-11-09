@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f64fb5efe8e8a3f4c998fe3ac99069fa
+guid: faec62f33aff33b47937f4e3bc845ddd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5696334358305517535
-    second: BackGround_01_0
+      213: -2377765980288249772
+    second: background_00_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 432
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -109,11 +109,24 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BackGround_01_0
+      name: background_00_0
       rect:
         serializedVersion: 2
         x: 0
@@ -127,8 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fdf27ac1be17d0f40800000000000000
-      internalID: 5696334358305517535
+      spriteID: 45019e9507a700fd0800000000000000
+      internalID: -2377765980288249772
       vertices: []
       indices: 
       edges: []
@@ -144,7 +157,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      BackGround_01_0: 5696334358305517535
+      background_00_0: -2377765980288249772
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
