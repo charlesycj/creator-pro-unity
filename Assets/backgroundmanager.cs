@@ -3,23 +3,23 @@ using UnityEngine;
 
 public class BackgroundManager : MonoBehaviour
 {
-    public GameObject[] backgrounds; // 3°³ÀÇ ¹è°æ ¿ÀºêÁ§Æ®¸¦ ¹è¿­·Î °ü¸®
-    public float changeInterval = 5f; // ¹è°æ º¯°æ ÁÖ±â (5ÃÊ)
+    public GameObject[] backgrounds; // 3ê°œì˜ ë°°ê²½ ì˜¤ë¸Œì íŠ¸ë¥¼ ë°°ì—´ë¡œ ê´€ë¦¬
+    public float changeInterval = 5f; // ë°°ê²½ ë³€ê²½ ì£¼ê¸° (5ì´ˆ)
 
-    private int currentState = 0; // ÇöÀç ¹è°æ »óÅÂ (0: Ã¹ ¹øÂ°, 1: µÎ ¹øÂ°, 2: ¼¼ ¹øÂ°)
+    private int currentState = 0; // í˜„ì¬ ë°°ê²½ ìƒíƒœ (0: ì²« ë²ˆì§¸, 1: ë‘ ë²ˆì§¸, 2: ì„¸ ë²ˆì§¸)
 
     void Start()
     {
-        // ÃÊ±â »óÅÂ: Ã¹ ¹øÂ° È°¼ºÈ­, ³ª¸ÓÁö ºñÈ°¼ºÈ­
+        // ì´ˆê¸° ìƒíƒœ: ì²« ë²ˆì§¸ í™œì„±í™”, ë‚˜ë¨¸ì§€ ë¹„í™œì„±í™”
         UpdateBackgroundState(0);
 
-        // º¯°æ ·çÇÁ ½ÃÀÛ
+        // ë³€ê²½ ë£¨í”„ ì‹œì‘
         StartCoroutine(ChangeBackgroundRoutine());
     }
 
     IEnumerator ChangeBackgroundRoutine()
     {
-        while (currentState < 2) // ¼¼ ¹øÂ° ¹è°æ È°¼ºÈ­ ÀÌÈÄ ·çÇÁ Á¾·á
+        while (currentState < 2) // ì„¸ ë²ˆì§¸ ë°°ê²½ í™œì„±í™” ì´í›„ ë£¨í”„ ì¢…ë£Œ
         {
             yield return new WaitForSeconds(changeInterval);
 
@@ -30,13 +30,13 @@ public class BackgroundManager : MonoBehaviour
 
     void UpdateBackgroundState(int state)
     {
-        // ¸ğµç ¹è°æ ºñÈ°¼ºÈ­
+        // ëª¨ë“  ë°°ê²½ ë¹„í™œì„±í™”
         for (int i = 0; i < backgrounds.Length; i++)
         {
             backgrounds[i].SetActive(false);
         }
 
-        // ÇöÀç »óÅÂ¿¡ µû¶ó È°¼ºÈ­ÇÒ ¹è°æ ¼³Á¤
+        // í˜„ì¬ ìƒíƒœì— ë”°ë¼ í™œì„±í™”í•  ë°°ê²½ ì„¤ì •
         if (state >= 0 && state < backgrounds.Length)
         {
             backgrounds[state].SetActive(true);
