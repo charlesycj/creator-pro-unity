@@ -76,15 +76,16 @@ public class buffMover : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // 바닥 충돌 시 오브젝트 파괴
+        // 바닥 충돌 시 버프 파괴
         if (collision.gameObject.CompareTag("Ground"))
         {
             Destroy(gameObject);
         }
 
-        // 플레이어 충돌 시 게임 중지
+        // 플레이어 충돌 시 버프 습득
         if (collision.gameObject.CompareTag("Player"))
         {
+            
             Destroy(gameObject);
         }
     }
