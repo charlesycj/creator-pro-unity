@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ObjectBuff : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class ObjectBuff : MonoBehaviour
     private float nextDownwardBuffTime = 0f; // 다음 아래로 내려가는 버프 생성 시간
     private bool gameStopped = false;      // 게임 상태 확인
     private float gravityScale = 10f;      // 중력 스케일 초기값
+
+    private List<GameObject> activeBuffs = new List<GameObject>(); // 활성화된 버프 리스트
 
     void Start()
     {
@@ -54,10 +57,12 @@ public class ObjectBuff : MonoBehaviour
 
         // 버프 생성
         GameObject buff = Instantiate(buffPrefab, spawnPosition, Quaternion.identity);
+        activeBuffs.Add(buff); // 리스트에 추가
 
         // Rigidbody2D 컴포넌트 추가 및 중력 설정
         Rigidbody2D rb = buff.AddComponent<Rigidbody2D>();
         rb.gravityScale = isUpwardBuff ? -gravityScale : gravityScale; // 위로 가는 경우 중력 반전
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
         // Collider2D가 없다면 추가 (물리 충돌을 위해)
         if (buff.GetComponent<Collider2D>() == null)
@@ -81,23 +86,15 @@ public class ObjectBuff : MonoBehaviour
     public void StopGame()
     {
         gameStopped = true; // 게임 멈춤 상태 설정
-    }
-}
 
-public class Buff : MonoBehaviour
-{
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        // 바닥과 충돌했을 때 버프 파괴
-        if (collision.gameObject.CompareTag("Ground"))
+        // 활성화된 모든 버프 제거
+        foreach (var buff in activeBuffs)
         {
-            Destroy(gameObject); // 버프 파괴
+            if (buff != null)
+            {
+                Destroy(buff);
+            }
         }
-
-        // 플레이어와 충돌했을 때 버프 습득
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            Destroy(gameObject); // 버프 습득 후 파괴
-        }
+        activeBuffs.Clear(); // 리스트 초기화
     }
 }

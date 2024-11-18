@@ -75,6 +75,7 @@ public class DualObjectSpawner : MonoBehaviour
         // Rigidbody2D 추가 및 중력 설정
         Rigidbody2D rb = newObject.AddComponent<Rigidbody2D>();
         rb.gravityScale = gravity;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
         // Collider2D 추가 (없을 경우)
         if (newObject.GetComponent<Collider2D>() == null)
