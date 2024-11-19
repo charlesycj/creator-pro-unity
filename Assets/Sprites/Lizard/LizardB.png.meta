@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0cc62d3f6f6155f4bad0f9a85f752634
+guid: 8c8b272040b18eb49bfcba03819b3043
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7888804008686160920
-    second: LizardA_0
+      213: 6220985159123103096
+    second: LizardB_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: LizardA_0
+      name: LizardB_0
       rect:
         serializedVersion: 2
-        x: 35
-        y: 29
-        width: 882
-        height: 1084
+        x: 95
+        y: 36
+        width: 750
+        height: 1093
       alignment: 9
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -127,8 +127,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 81c8a600379aa7d60800000000000000
-      internalID: 7888804008686160920
+      spriteID: 87d6282ca01655650800000000000000
+      internalID: 6220985159123103096
       vertices: []
       indices: 
       edges: []
@@ -136,7 +136,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: ad30d3c8c2cb33d48ab1ccdb1f2bdd1c
+    spriteID: ca49cc5a3e713d24885a87833ea5043a
     internalID: 0
     vertices: []
     indices: 
@@ -144,7 +144,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      LizardA_0: 7888804008686160920
+      LizardB_0: 6220985159123103096
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

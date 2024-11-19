@@ -62,12 +62,12 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(leftKey)) // 왼쪽 이동 키가 눌렸다면
         {
             h = -1; // 왼쪽으로 이동
-            renderer.flipX = true; // 이미지 반전
+            renderer.flipX = false; // 이미지 그대로
         }
         else if (Input.GetKey(rightKey)) // 오른쪽 이동 키가 눌렸다면
         {
             h = 1; // 오른쪽으로 이동
-            renderer.flipX = false; // 이미지 그대로
+            renderer.flipX = true; // 이미지 반전
         }
 
         // 속도 설정
