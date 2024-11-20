@@ -1,52 +1,110 @@
 using UnityEngine;
-using System.Collections.Generic;
 
-public class DualbuffSpawner : MonoBehaviour
+public class BuffSpawner : MonoBehaviour
 {
     [SerializeField]
-    public GameObject upwardbuffPrefab;    // 위로 올라가는 오브젝트 프리팹
+    public GameObject SpeedBuffPrefab;    // 스피드 증가 프리팹
     [SerializeField]
-    public GameObject downwardbuffPrefab;  // 아래로 내려가는 오브젝트 프리팹
-    public float spawnIntervalbuff = 15.0f;         // 오브젝트 생성 간격 (초)
-    private bool gameStopped = false;        // 게임 상태 확인
-    private float gravityScale = 10f;        // 중력 스케일 초기값
+    public GameObject ShieldBuffPrefab;   // 1회용 보호막 프리팹
+    [SerializeField]
+    public GameObject HideBuffPrefab;  // 무적 프리팹
+
+    public float spawnInterval = 1.0f;    // 오브젝트 생성 간격 (초)
+    private bool gameStopped = false;      // 게임 상태 확인
+    private float gravityScale = 10f;      // 중력 스케일 초기값
 
     void Start()
     {
-        // 일정 간격으로 두 방향 오브젝트 생성
-        InvokeRepeating("SpawnUpwardbuff", 0f, spawnIntervalbuff);
-        InvokeRepeating("SpawnDownwardbuff", 0f, spawnIntervalbuff);
+        // 위 아래로 버프 생성
+        InvokeRepeating("SpawnUpwardBuff", 0f, spawnInterval);  // 위에서 내려오는 버프
+        InvokeRepeating("SpawnDownwardBuff", spawnInterval / 2, spawnInterval);  // 아래에서 올라오는 버프
     }
 
     void Update()
     {
         if (gameStopped) return;
-
     }
 
-    public void SpawnUpwardbuff()
+    public void SpawnUpwardBuff()
+{
+    if (gameStopped) return;
+
+    // 무작위로 버프 선택 (3가지 중에서 랜덤)
+    int buffType = Random.Range(1, 4);  // 1, 2, 3 중 하나 선택
+    float randomX = Random.Range(-850f, 850f);
+    Vector3 spawnPosition = new Vector3(randomX, -425f, 0f);  // 아래에서 위로 올라오는 위치
+
+    GameObject selectedPrefab = null;
+
+    // 버프 종류에 따라 선택
+    switch (buffType)
     {
-        if (gameStopped) return;
-
-        // 무작위 X 좌표와 Y 좌표 설정 (아래에서 위로 올라가는 방향)
-        float randomX = Random.Range(-850f, 850f);
-        Vector3 spawnPosition = new Vector3(randomX, -425f, 0f);
-
-        // 오브젝트 생성
-        Spawnbuff(upwardbuffPrefab, spawnPosition, -gravityScale);
+        case 1:
+            selectedPrefab = SpeedBuffPrefab;  // 스피드 증가 버프
+            Debug.Log("올라가는 스피드 선택");
+            break;
+        case 2:
+            selectedPrefab = ShieldBuffPrefab; // 1회용 보호막 버프
+            Debug.Log("올라가는 보호막 선택");
+            break;
+        case 3:
+            selectedPrefab = HideBuffPrefab;  // 무적 버프
+            Debug.Log("올라가는 무적 선택");
+            break;
     }
 
-    public void SpawnDownwardbuff()
+    // 선택된 버프 생성
+    if (selectedPrefab != null)
     {
-        if (gameStopped) return;
-
-        // 무작위 X 좌표와 Y 좌표 설정 (위에서 아래로 내려오는 방향)
-        float randomX = Random.Range(-850f, 850f);
-        Vector3 spawnPosition = new Vector3(randomX, 425f, 0f);
-
-        // 오브젝트 생성
-        Spawnbuff(downwardbuffPrefab, spawnPosition, gravityScale);
+        Debug.Log("selectedPrefab name: " + selectedPrefab.name); // 생성되는 프리팹 이름 확인
+        Spawnbuff(selectedPrefab, spawnPosition, -gravityScale);
     }
+    else
+    {
+        Debug.LogError("selectedPrefab is null!");
+    }
+}
+
+public void SpawnDownwardBuff()
+{
+    if (gameStopped) return;
+
+    // 무작위로 버프 선택 (3가지 중에서 랜덤)
+    int buffType = Random.Range(1, 4);  // 1, 2, 3 중 하나 선택
+    float randomX = Random.Range(-850f, 850f);
+    Vector3 spawnPosition = new Vector3(randomX, 425f, 0f);  // 위에서 아래로 내려오는 위치
+
+    GameObject selectedPrefab = null;
+
+    // 버프 종류에 따라 선택
+    switch (buffType)
+    {
+        case 1:
+            selectedPrefab = SpeedBuffPrefab;  // 스피드 증가 버프
+            Debug.Log("내려가는 스피드 선택");
+            break;
+        case 2:
+            selectedPrefab = ShieldBuffPrefab; // 1회용 보호막 버프
+            Debug.Log("내려가는 보호막 선택");
+            break;
+        case 3:
+            selectedPrefab = HideBuffPrefab;  // 무적 버프
+            Debug.Log("내려가는 무적 선택");
+            break;
+    }
+
+    // 선택된 버프 생성
+    if (selectedPrefab != null)
+    {
+        Debug.Log("selectedPrefab name: " + selectedPrefab.name); // 생성되는 프리팹 이름 확인
+        Spawnbuff(selectedPrefab, spawnPosition, gravityScale);
+    }
+    else
+    {
+        Debug.LogError("selectedPrefab is null!");
+    }
+}
+
 
     private void Spawnbuff(GameObject prefab, Vector3 position, float gravity)
     {
@@ -58,21 +116,21 @@ public class DualbuffSpawner : MonoBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
         // 공통 스크립트 추가 및 스포너 참조 전달
-        buffMover moverScript = newObject.AddComponent<buffMover>();
+        BuffMover moverScript = newObject.AddComponent<BuffMover>();
         moverScript.spawnerScript = this;
     }
 
     public void StopGame()
     {
         gameStopped = true;
-        CancelInvoke("SpawnUpwardbuff");
-        CancelInvoke("SpawnDownwardbuff");
+        CancelInvoke("SpawnUpwardBuff");
+        CancelInvoke("SpawnDownwardBuff");
     }
 }
 
-public class buffMover : MonoBehaviour
+public class BuffMover : MonoBehaviour
 {
-    public DualbuffSpawner spawnerScript; // DualbuffSpawner 참조
+    public BuffSpawner spawnerScript;  // BuffSpawner 참조
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -85,7 +143,6 @@ public class buffMover : MonoBehaviour
         // 플레이어 충돌 시 버프 습득
         if (collision.gameObject.CompareTag("Player"))
         {
-            
             Destroy(gameObject);
         }
     }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 639328009584019036}
   - component: {fileID: -7226953094481518502}
   m_Layer: 0
-  m_Name: buffObject
+  m_Name: SpeedBuffPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

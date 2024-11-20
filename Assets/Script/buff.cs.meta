@@ -1,2 +1,17 @@
 fileFormatVersion: 2
 guid: e6fc1e5d1129ba94fae4ed66a02d222b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - speedupwardbuffPrefab1: {fileID: 4212252878639775101, guid: cc53ab89614a68e43924640c6bbb3d2b, type: 3}
+  - shieldupwardbuffPrefab2: {fileID: 4757777723656294561, guid: a12b21a1c8646a64792fa4a7da4e12e9, type: 3}
+  - hideupwardbuffPrefab3: {fileID: 3944674571305693918, guid: 759a700067f86c342bb307a1ee5139fa, type: 3}
+  - speeddownwardbuffPrefab1: {fileID: 4212252878639775101, guid: cc53ab89614a68e43924640c6bbb3d2b, type: 3}
+  - shielddownwardbuffPrefab2: {fileID: 4757777723656294561, guid: a12b21a1c8646a64792fa4a7da4e12e9, type: 3}
+  - hidedownwardbuffPrefab3: {fileID: 3944674571305693918, guid: 759a700067f86c342bb307a1ee5139fa, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
