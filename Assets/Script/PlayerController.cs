@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class PlayerController : MonoBehaviour
 {
     [Header("Player A Settings")]
@@ -23,6 +22,8 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rigidA, rigidB; // 각각의 Rigidbody2D
     private SpriteRenderer rendererA, rendererB; // 각각의 SpriteRenderer
+
+    private bool isGameOver = false; // 게임오버 상태 플래그
 
     void Start()
     {
@@ -48,10 +49,16 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Player A 이동
-        HandlePlayerMovement(playerA, rigidA, rendererA, playerASpeed, playerALeftKey, playerARightKey);
+        if (isGameOver)
+        {
+            // 게임오버 시 이동 정지
+            StopPlayerMovement(rigidA);
+            StopPlayerMovement(rigidB);
+            return; // 더 이상 이동하지 않도록 Early Return
+        }
 
-        // Player B 이동
+        // 게임오버 상태가 아니라면 플레이어 이동 처리
+        HandlePlayerMovement(playerA, rigidA, rendererA, playerASpeed, playerALeftKey, playerARightKey);
         HandlePlayerMovement(playerB, rigidB, rendererB, playerBSpeed, playerBLeftKey, playerBRightKey);
     }
 
@@ -78,4 +85,24 @@ public class PlayerController : MonoBehaviour
         clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
         player.transform.position = clampedPosition;
     }
+
+    public void TriggerGameOver()
+    {
+        isGameOver = true; // 게임오버 상태로 전환
+        Debug.Log("게임오버: 플레이어 움직임 정지");
+
+        // 플레이어 A와 B의 Rigidbody2D 정지
+        playerASpeed = 0;
+        playerBSpeed = 0;
+    }
+
+    private void StopPlayerMovement(Rigidbody2D rigid)
+    {
+        if (rigid != null)
+        {
+            rigid.velocity = Vector2.zero; // 속도 초기화
+            rigid.isKinematic = true; // 물리 연산 비활성화
+        }
+    }
+
 }

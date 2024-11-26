@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6545242005811482597}
   - component: {fileID: 639328009584019036}
-  - component: {fileID: -7226953094481518502}
+  - component: {fileID: 3533825633481643093}
   m_Layer: 0
   m_Name: SpeedBuffPrefab
   m_TagString: Untagged
@@ -87,7 +87,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &-7226953094481518502
+--- !u!61 &3533825633481643093
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
