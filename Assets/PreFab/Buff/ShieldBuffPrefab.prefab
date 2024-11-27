@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -9158524383469226365}
   m_Layer: 0
   m_Name: ShieldBuffPrefab
-  m_TagString: Untagged
+  m_TagString: ShieldBuff
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

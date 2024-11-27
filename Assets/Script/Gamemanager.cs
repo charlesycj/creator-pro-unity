@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class DualObjectAndBuffSpawner : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class DualObjectAndBuffSpawner : MonoBehaviour
 
    
     public float objectSpawnInterval = 1f; // 오브젝트 생성 간격
-    public float buffSpawnInterval = 1f;   // 버프 생성 간격 (변경되지 않음)
+    public float buffSpawnInterval = 15f;   // 버프 생성 간격 (변경되지 않음)
     private float timeElapsed = 0f;
     private bool gameStopped = false;
     private float gravityScale = 10f;
@@ -90,19 +91,19 @@ public class DualObjectAndBuffSpawner : MonoBehaviour
     }
 
     // 버프 스폰 관련 함수
-    public void SpawnUpwardBuff()
+    public void SpawnUpwardBuff() //올라가는 버프 무작위좌표에 생성
     {
         if (gameStopped) return;
         SpawnBuff(GetRandomBuffPrefab(), new Vector3(Random.Range(-850f, 850f), -425f, 0f), -gravityScale);
     }
 
-    public void SpawnDownwardBuff()
+    public void SpawnDownwardBuff() //내려가는 버프 무작위좌표에 생성
     {
         if (gameStopped) return;
         SpawnBuff(GetRandomBuffPrefab(), new Vector3(Random.Range(-850f, 850f), 425f, 0f), gravityScale);
     }
 
-    private GameObject GetRandomBuffPrefab()
+    private GameObject GetRandomBuffPrefab() //버프아이템 무작위결정
     {
         int buffType = Random.Range(1, 4);
         return buffType switch
@@ -142,7 +143,7 @@ public class DualObjectAndBuffSpawner : MonoBehaviour
         moverScript.spawnerScript = this;
     }
 
-    public void StopGame()
+    public void StopGame() //게임정지시 오브젝트 생성 정지
     {
         gameStopped = true;
         CancelInvoke(nameof(SpawnUpwardObject));
@@ -158,77 +159,123 @@ public class ObjectMover : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-   
-
         if (collision.gameObject.CompareTag("Player"))
         {
-            // PlayerManager 오브젝트를 찾기
-            GameObject PlayerManager = GameObject.Find("PlayerManager"); // PlayerManager 오브젝트를 찾는다.
+            GameObject playerManager = GameObject.Find("PlayerManager");
+            PlayerController playerController = playerManager.GetComponent<PlayerController>();
+            bool isPlayerA = collision.gameObject == playerController.playerA;
 
-            if (PlayerManager != null)
+            // 은신 상태일 때 충돌 무시
+            if (playerController.IsPlayerHide(isPlayerA))
             {
-                // PlayerManager에서 PlayerMove 스크립트를 가져오기
-                PlayerController PlayerMoveScript = PlayerManager.GetComponent<PlayerController>();
-
-                if (PlayerMoveScript != null)
-                {
-                    // PlayerMove 스크립트가 있으면 playerA와 playerB에서 각각 TriggerGameOver 호출
-                    PlayerController playerAController = PlayerMoveScript.playerA.GetComponent<PlayerController>();
-                    PlayerController playerBController = PlayerMoveScript.playerB.GetComponent<PlayerController>();
-
-                    if (playerAController != null)
-                    {
-                        playerAController.TriggerGameOver();
-                        Debug.Log("Player A의 게임오버 호출됨");
-                    }
-
-                    if (playerBController != null)
-                    {
-                        playerBController.TriggerGameOver();
-                        Debug.Log("Player B의 게임오버 호출됨");
-                    }
-
-                    spawnerScript.StopGame(); // 게임 중지
-                    Debug.Log("플레이어와 충돌하여 게임이 멈췄습니다.");
-                }
-                else
-                {
-                    Debug.LogWarning("PlayerMove 스크립트를 찾을 수 없습니다.");
-                }
-            }
-            else
-            {
-                Debug.LogWarning("PlayerManager를 찾을 수 없습니다.");
+                Debug.Log("은신 상태로 장애물 무시");
+                Destroy(gameObject); // 장애물 제거
+                return;
             }
 
-            Destroy(gameObject); // 충돌한 오브젝트 제거
+            // 실드가 활성화된 경우 장애물만 방어
+            if (playerController.IsShieldActive(isPlayerA))
+            {
+                Debug.Log("실드가 활성화되어 장애물 방어");
+                playerController.RemoveShieldBuff(isPlayerA); // 실드 버프 해제
+                Destroy(gameObject); // 장애물 제거
+                return;
+            }
+
+            // 게임 오버 처리
+            spawnerScript.StopGame();
+            Debug.Log("충돌로 게임 오버!");
+            playerController.playerASpeed = 0;
+            playerController.playerBSpeed = 0;
+            Destroy(gameObject); // 장애물 제거
         }
 
         if (collision.gameObject.CompareTag("Ground"))
         {
-            Destroy(gameObject); // Ground와 충돌 시 제거
+            Destroy(gameObject); // 바닥에 충돌하면 제거
         }
     }
-
-
-
 }
-
-
 
 public class BuffMover : MonoBehaviour
 {
     public DualObjectAndBuffSpawner spawnerScript;
 
+    // 충돌 처리
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
+            GameObject playerManager = GameObject.Find("PlayerManager");
+            PlayerController playerController = playerManager.GetComponent<PlayerController>();
+            bool isPlayerA = collision.gameObject == playerController.playerA;
+
+            // 은신 상태와 충돌 처리
+            if (playerController.IsPlayerHide(isPlayerA) && !CompareTag("SpeedBuff") && !CompareTag("ShieldBuff") && !CompareTag("HideBuff"))
+            {
+                Destroy(gameObject); // 장애물 제거
+                return;
+            }
+
+            if (CompareTag("SpeedBuff"))
+            {
+                // 스피드 버프 코루틴 관리
+                playerController.StartManagedCoroutine(
+                    playerController.activeSpeedBuffCoroutines, isPlayerA,
+                    ApplySpeedBuff(playerController, isPlayerA)
+                );
+                Debug.Log("스피드업 버프 획득");
+            }
+            else if (CompareTag("HideBuff"))
+            {
+                // 은신 버프 코루틴 관리
+                playerController.StartManagedCoroutine(
+                    playerController.activeHideBuffCoroutines, isPlayerA,
+                    ApplyHideBuff(playerController, isPlayerA)
+                );
+                Debug.Log("은신 버프 획득");
+            }
+
             Destroy(gameObject);
         }
-        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Player"))
+
+       
+        if (collision.gameObject.CompareTag("Ground"))
         {
             Destroy(gameObject);
         }
     }
+
+    // 스피드업 버프 적용
+    private IEnumerator ApplySpeedBuff(PlayerController playerController, bool isPlayerA)
+    {
+        // 버프 적용
+        if (isPlayerA)
+            playerController.playerASpeed += 200;
+        else
+            playerController.playerBSpeed += 200;
+
+        yield return new WaitForSeconds(10f); // 10초 지속
+
+        // 버프 해제
+        if (isPlayerA)
+            playerController.playerASpeed -= 200;
+        else
+            playerController.playerBSpeed -= 200;
+
+        Debug.Log("스피드업 버프 해제");
+    }
+
+    // 은신 버프 적용
+    private IEnumerator ApplyHideBuff(PlayerController playerController, bool isPlayerA)
+    {
+        playerController.SetPlayerHide(true, isPlayerA); // 은신 상태 설정
+        yield return new WaitForSeconds(5f); // 5초 지속
+        playerController.SetPlayerHide(false, isPlayerA); // 은신 상태 해제
+        Debug.Log("은신 버프 해제");
+    }
 }
+    
+
+
+

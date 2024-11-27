@@ -3,17 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
+
+    public Dictionary<bool, Coroutine> activeSpeedBuffCoroutines = new Dictionary<bool, Coroutine>();
+    public Dictionary<bool, Coroutine> activeHideBuffCoroutines = new Dictionary<bool, Coroutine>();
+
     [Header("Player A Settings")]
     public GameObject playerA; // Player A 오브젝트
-    public float playerASpeed; // Player A 속도
+    public float playerASpeed = 400; // Player A 속도
     public KeyCode playerALeftKey = KeyCode.A; // Player A 왼쪽 이동 키
     public KeyCode playerARightKey = KeyCode.D; // Player A 오른쪽 이동 키
+    public bool playerAHide;
+    public bool playerAHasShield;
+
 
     [Header("Player B Settings")]
     public GameObject playerB; // Player B 오브젝트
-    public float playerBSpeed; // Player B 속도
+    public float playerBSpeed = 400; // Player B 속도
     public KeyCode playerBLeftKey = KeyCode.LeftArrow; // Player B 왼쪽 이동 키
     public KeyCode playerBRightKey = KeyCode.RightArrow; // Player B 오른쪽 이동 키
+    public bool playerBHide;
+    public bool playerBHasShield;
+
+    //1회용 쉴드 활성화 상태 추적
+    private bool playerAIsShieldActive, playerBIsShieldActive;
 
     [Header("Ground Settings")]
     public GameObject ground; // Ground 오브젝트
@@ -49,17 +61,13 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isGameOver)
+        if (!isGameOver)
         {
-            // 게임오버 시 이동 정지
-            StopPlayerMovement(rigidA);
-            StopPlayerMovement(rigidB);
-            return; // 더 이상 이동하지 않도록 Early Return
-        }
 
-        // 게임오버 상태가 아니라면 플레이어 이동 처리
-        HandlePlayerMovement(playerA, rigidA, rendererA, playerASpeed, playerALeftKey, playerARightKey);
-        HandlePlayerMovement(playerB, rigidB, rendererB, playerBSpeed, playerBLeftKey, playerBRightKey);
+            // 플레이어 A와 B의 이동을 처리
+            HandlePlayerMovement(playerA, rigidA, rendererA, playerASpeed, playerALeftKey, playerARightKey);
+            HandlePlayerMovement(playerB, rigidB, rendererB, playerBSpeed, playerBLeftKey, playerBRightKey);
+        }
     }
 
     void HandlePlayerMovement(GameObject player, Rigidbody2D rigid, SpriteRenderer renderer, float speed, KeyCode leftKey, KeyCode rightKey)
@@ -78,7 +86,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // 속도 설정
-        rigid.velocity = new Vector2(h * speed, rigid.velocity.y);
+        rigid.velocity = new Vector2(h * speed, rigid.velocity.y); // y축 속도는 그대로 두고 x축 속도만 변경
 
         // Ground 범위 내로 이동 제한
         Vector3 clampedPosition = player.transform.position;
@@ -86,23 +94,77 @@ public class PlayerController : MonoBehaviour
         player.transform.position = clampedPosition;
     }
 
-    public void TriggerGameOver()
-    {
-        isGameOver = true; // 게임오버 상태로 전환
-        Debug.Log("게임오버: 플레이어 움직임 정지");
 
-        // 플레이어 A와 B의 Rigidbody2D 정지
-        playerASpeed = 0;
-        playerBSpeed = 0;
+    public bool IsPlayerHide(bool isPlayerA)
+    {
+        return isPlayerA ? playerAHide : playerBHide;
     }
 
-    private void StopPlayerMovement(Rigidbody2D rigid)
+    public bool HasShield(bool isPlayerA)
     {
-        if (rigid != null)
+        return isPlayerA ? playerAHasShield : playerBHasShield;
+    }
+
+    // 1회용 실드가 어떤플레이어에게 활성화되어 있는지 확인
+    public bool IsShieldActive(bool isPlayerA)
+    {
+        return isPlayerA ? playerAIsShieldActive : playerBIsShieldActive;
+    }
+
+    // 실드 적용 함수
+    public void ApplyShieldBuff(bool isPlayerA)
+    {
+        if (isPlayerA && !playerAIsShieldActive)
         {
-            rigid.velocity = Vector2.zero; // 속도 초기화
-            rigid.isKinematic = true; // 물리 연산 비활성화
+            playerAIsShieldActive = true;
+            playerAHasShield = true;
+        }
+        else if (!isPlayerA && !playerBIsShieldActive)
+        {
+            playerBIsShieldActive = true;
+            playerBHasShield = true;
         }
     }
 
+    // 실드 해제 함수
+    public void RemoveShieldBuff(bool isPlayerA)
+    {
+        if (isPlayerA)
+        {
+            playerAIsShieldActive = false;
+            playerAHasShield = false; // 실드 상태를 명확히 해제
+        }
+        else
+        {
+            playerBIsShieldActive = false;
+            playerBHasShield = false; // 실드 상태를 명확히 해제
+        }
+    }
+
+    public void SetPlayerHide(bool isHide, bool isPlayerA)
+    {
+        if (isPlayerA)
+        {
+            playerAHide = isHide; // 은신 상태 업데이트
+            playerA.SetActive(!isHide); // 플레이어 오브젝트 활성화/비활성화
+        }
+        else
+        {
+            playerBHide = isHide;
+            playerB.SetActive(!isHide);
+        }
+    }
+    public Coroutine StartManagedCoroutine(Dictionary<bool, Coroutine> coroutineDict, bool isPlayerA, IEnumerator coroutineMethod)
+    {
+        // 기존 코루틴 중지
+        if (coroutineDict.ContainsKey(isPlayerA) && coroutineDict[isPlayerA] != null)
+        {
+            StopCoroutine(coroutineDict[isPlayerA]);
+        }
+        // 새 코루틴 시작
+        Coroutine newCoroutine = StartCoroutine(coroutineMethod);
+        coroutineDict[isPlayerA] = newCoroutine;
+        return newCoroutine;
+    }
 }
+  

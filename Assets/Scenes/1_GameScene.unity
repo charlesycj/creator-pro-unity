@@ -186,7 +186,7 @@ Rigidbody2D:
   m_Mass: 3
   m_LinearDrag: 2
   m_AngularDrag: 0.05
-  m_GravityScale: 200
+  m_GravityScale: 100
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -298,7 +298,7 @@ Transform:
   m_GameObject: {fileID: 69246870}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 200, z: 0}
+  m_LocalPosition: {x: 4, y: 234, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -832,7 +832,7 @@ Rigidbody2D:
   m_Mass: 3
   m_LinearDrag: 2
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: -100
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -944,7 +944,7 @@ Transform:
   m_GameObject: {fileID: 535716411}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -200, z: 0}
+  m_LocalPosition: {x: 7, y: -172, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1491,10 +1491,14 @@ MonoBehaviour:
   playerASpeed: 400
   playerALeftKey: 97
   playerARightKey: 100
+  playerAHide: 0
+  playerAHasShield: 0
   playerB: {fileID: 535716411}
   playerBSpeed: 400
   playerBLeftKey: 276
   playerBRightKey: 275
+  playerBHide: 0
+  playerBHasShield: 0
   ground: {fileID: 812319685}
 --- !u!1 &976950591
 GameObject:
@@ -2000,7 +2004,7 @@ MonoBehaviour:
   ShieldBuffPrefab: {fileID: 4757777723656294561, guid: a12b21a1c8646a64792fa4a7da4e12e9, type: 3}
   HideBuffPrefab: {fileID: 3944674571305693918, guid: 759a700067f86c342bb307a1ee5139fa, type: 3}
   objectSpawnInterval: 1
-  buffSpawnInterval: 1
+  buffSpawnInterval: 5
   currentStage: 1
 --- !u!4 &1276294032
 Transform:
