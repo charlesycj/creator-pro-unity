@@ -1,7 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class PlayerController : MonoBehaviour
+public class PlayerManager : MonoBehaviour
 {
 
     public Dictionary<bool, Coroutine> activeSpeedBuffCoroutines = new Dictionary<bool, Coroutine>();
@@ -98,6 +99,7 @@ public class PlayerController : MonoBehaviour
     public bool IsPlayerHide(bool isPlayerA)
     {
         return isPlayerA ? playerAHide : playerBHide;
+
     }
 
     public bool HasShield(bool isPlayerA)
@@ -141,19 +143,80 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void SetPlayerHide(bool isHide, bool isPlayerA)
+    public void SetPlayerHide(bool isHide, bool isPlayerA, float duration = 0f)
     {
-        if (isPlayerA)
+        GameObject player = isPlayerA ? playerA : playerB;
+        Collider2D playerCollider = player.GetComponent<Collider2D>();
+        SpriteRenderer renderer = player.GetComponent<SpriteRenderer>();
+
+        if (isHide)
         {
-            playerAHide = isHide; // 은신 상태 업데이트
-            playerA.SetActive(!isHide); // 플레이어 오브젝트 활성화/비활성화
+            // 반투명 효과 (알파 값 50%)
+            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 0.5f);
+
+            // 장애물 충돌 비활성화
+            foreach (GameObject Avoid in GameObject.FindGameObjectsWithTag("Avoid"))
+            {
+                Collider2D obstacleCollider = Avoid.GetComponent<Collider2D>();
+                if (obstacleCollider != null)
+                {
+                    Physics2D.IgnoreCollision(playerCollider, obstacleCollider, true);
+                }
+            }
+
+            // 은신 상태 유지 및 충돌 무시 상태 유지
+            StartCoroutine(KeepCollisionIgnoredDuringHide(duration, playerCollider));
         }
         else
         {
-            playerBHide = isHide;
-            playerB.SetActive(!isHide);
+            // 반투명 효과 해제
+            renderer.color = new Color(renderer.color.r, renderer.color.g, renderer.color.b, 1f);
+
+            // 장애물 충돌 활성화
+            foreach (GameObject Avoid in GameObject.FindGameObjectsWithTag("Avoid"))
+            {
+                Collider2D obstacleCollider = Avoid.GetComponent<Collider2D>();
+                if (obstacleCollider != null)
+                {
+                    Physics2D.IgnoreCollision(playerCollider, obstacleCollider, false);
+                }
+            }
         }
     }
+
+    // 은신 상태 동안 충돌 무시를 지속적으로 유지하는 코루틴
+    private IEnumerator KeepCollisionIgnoredDuringHide(float duration, Collider2D playerCollider)
+    {
+        float remainingTime = duration;
+
+        while (remainingTime > 0)
+        {
+            yield return new WaitForSeconds(0.1f); // 매 0.1초마다 계속 충돌을 무시
+            remainingTime -= 0.1f;
+
+            // 은신 상태 동안 장애물 충돌 무시
+            foreach (GameObject Avoid in GameObject.FindGameObjectsWithTag("Avoid"))
+            {
+                Collider2D obstacleCollider = Avoid.GetComponent<Collider2D>();
+                if (obstacleCollider != null)
+                {
+                    Physics2D.IgnoreCollision(playerCollider, obstacleCollider, true);
+                }
+            }
+        }
+
+        // 은신 상태가 끝나면 충돌을 다시 활성화
+        foreach (GameObject Avoid in GameObject.FindGameObjectsWithTag("Avoid"))
+        {
+            Collider2D obstacleCollider = Avoid.GetComponent<Collider2D>();
+            if (obstacleCollider != null)
+            {
+                Physics2D.IgnoreCollision(playerCollider, obstacleCollider, false);
+            }
+        }
+    }
+
+
     public Coroutine StartManagedCoroutine(Dictionary<bool, Coroutine> coroutineDict, bool isPlayerA, IEnumerator coroutineMethod)
     {
         // 기존 코루틴 중지

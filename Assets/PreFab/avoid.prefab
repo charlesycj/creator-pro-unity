@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -2546200218940811020}
   m_Layer: 0
   m_Name: avoid
-  m_TagString: Untagged
+  m_TagString: Avoid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

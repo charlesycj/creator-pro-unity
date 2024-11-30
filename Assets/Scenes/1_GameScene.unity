@@ -1529,13 +1529,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerA: {fileID: 69246870}
-  playerASpeed: 400
+  playerASpeed: 500
   playerALeftKey: 97
   playerARightKey: 100
   playerAHide: 0
   playerAHasShield: 0
   playerB: {fileID: 535716411}
-  playerBSpeed: 400
+  playerBSpeed: 500
   playerBLeftKey: 276
   playerBRightKey: 275
   playerBHide: 0
@@ -2011,7 +2011,7 @@ GameObject:
   - component: {fileID: 1276294032}
   - component: {fileID: 1276294031}
   m_Layer: 0
-  m_Name: Gamemanager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

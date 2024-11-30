@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class DualObjectAndBuffSpawner : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] stage1UpwardPrefabs;
     [SerializeField] private GameObject[] stage1DownwardPrefabs;
@@ -155,14 +155,14 @@ public class DualObjectAndBuffSpawner : MonoBehaviour
 
 public class ObjectMover : MonoBehaviour
 {
-    public DualObjectAndBuffSpawner spawnerScript;
+    public GameManager spawnerScript;
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
             GameObject playerManager = GameObject.Find("PlayerManager");
-            PlayerController playerController = playerManager.GetComponent<PlayerController>();
+            PlayerManager playerController = playerManager.GetComponent<PlayerManager>();
             bool isPlayerA = collision.gameObject == playerController.playerA;
 
             // 은신 상태일 때 충돌 무시
@@ -199,7 +199,7 @@ public class ObjectMover : MonoBehaviour
 
 public class BuffMover : MonoBehaviour
 {
-    public DualObjectAndBuffSpawner spawnerScript;
+    public GameManager spawnerScript;
 
     // 충돌 처리
     void OnCollisionEnter2D(Collision2D collision)
@@ -207,12 +207,13 @@ public class BuffMover : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             GameObject playerManager = GameObject.Find("PlayerManager");
-            PlayerController playerController = playerManager.GetComponent<PlayerController>();
+            PlayerManager playerController = playerManager.GetComponent<PlayerManager>();
             bool isPlayerA = collision.gameObject == playerController.playerA;
 
             // 은신 상태와 충돌 처리
             if (playerController.IsPlayerHide(isPlayerA) && !CompareTag("SpeedBuff") && !CompareTag("ShieldBuff") && !CompareTag("HideBuff"))
             {
+                Debug.Log("은신 상태로 장애물 무시");
                 Destroy(gameObject); // 장애물 제거
                 return;
             }
@@ -228,10 +229,11 @@ public class BuffMover : MonoBehaviour
             }
             else if (CompareTag("HideBuff"))
             {
+                float hideBuffDuration = 5f; // 은신 버프 지속 시간 (초)
                 // 은신 버프 코루틴 관리
                 playerController.StartManagedCoroutine(
                     playerController.activeHideBuffCoroutines, isPlayerA,
-                    ApplyHideBuff(playerController, isPlayerA)
+                    ApplyHideBuff(hideBuffDuration, isPlayerA)
                 );
                 Debug.Log("은신 버프 획득");
             }
@@ -249,16 +251,41 @@ public class BuffMover : MonoBehaviour
             }
             Destroy(gameObject);
         }
-
        
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             Destroy(gameObject);
         }
     }
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            GameObject playerManager = GameObject.Find("PlayerManager");
+            PlayerManager playerController = playerManager.GetComponent<PlayerManager>();
+            bool isPlayerA = collision.gameObject == playerController.playerA;
+
+            // 은신 상태일 때 충돌을 계속 무시
+            if (playerController.IsPlayerHide(isPlayerA) && !CompareTag("SpeedBuff") && !CompareTag("ShieldBuff") && !CompareTag("HideBuff"))
+            {
+                GameObject player = isPlayerA ? playerController.playerA : playerController.playerB;
+                Collider2D playerCollider = player.GetComponent<Collider2D>();
+
+                foreach (GameObject Avoid in GameObject.FindGameObjectsWithTag("Avoid"))
+                {
+                    Collider2D obstacleCollider = Avoid.GetComponent<Collider2D>();
+                    if (obstacleCollider != null)
+                    {
+                        Physics2D.IgnoreCollision(playerCollider, obstacleCollider, true);
+                    }
+                }
+            }
+        }
+    }
 
     // 스피드업 버프 적용
-    private IEnumerator ApplySpeedBuff(PlayerController playerController, bool isPlayerA)
+    private IEnumerator ApplySpeedBuff(PlayerManager playerController, bool isPlayerA)
     {
         // 버프 적용
         if (isPlayerA)
@@ -278,15 +305,22 @@ public class BuffMover : MonoBehaviour
     }
 
     // 은신 버프 적용
-    private IEnumerator ApplyHideBuff(PlayerController playerController, bool isPlayerA)
+    IEnumerator ApplyHideBuff(float duration, bool isPlayerA)
     {
-        playerController.SetPlayerHide(true, isPlayerA); // 은신 상태 설정
-        yield return new WaitForSeconds(5f); // 5초 지속
-        playerController.SetPlayerHide(false, isPlayerA); // 은신 상태 해제
-        Debug.Log("은신 버프 해제");
+        GameObject playerManager = GameObject.Find("PlayerManager");
+        PlayerManager playerController = playerManager.GetComponent<PlayerManager>();
+
+        // 은신 상태 활성화
+        playerController.SetPlayerHide(true, isPlayerA, duration);
+
+        yield return new WaitForSeconds(duration);
+
+        // 은신 상태 비활성화
+        playerController.SetPlayerHide(false, isPlayerA, duration);
     }
+
 }
-    
+
 
 
 
