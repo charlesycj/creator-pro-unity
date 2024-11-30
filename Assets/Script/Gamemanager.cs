@@ -235,7 +235,18 @@ public class BuffMover : MonoBehaviour
                 );
                 Debug.Log("은신 버프 획득");
             }
-
+            else if (CompareTag("ShieldBuff"))
+            {
+                if (!playerController.HasShield(isPlayerA)) // 이미 실드가 없는 경우에만 적용
+                {
+                    playerController.ApplyShieldBuff(isPlayerA);
+                    Debug.Log("실드 버프 획득");
+                }
+                else
+                {
+                    Debug.Log("실드가 이미 활성화되어 있습니다.");
+                }
+            }
             Destroy(gameObject);
         }
 
