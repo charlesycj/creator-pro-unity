@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
         // Player B 초기화
         rigidB = playerB.GetComponent<Rigidbody2D>();
-        rigidB.gravityScale = -200; // 중력 반전
+        rigidB.gravityScale = -100; // 중력 반전
         rendererB = playerB.GetComponent<SpriteRenderer>();
 
         // Ground 범위 설정
