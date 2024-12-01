@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
     public void IncreaseScore(int amount)
     {
         Score += amount;
-        Debug.Log($"점수가 {amount}만큼 증가했습니다. 현재 점수: {Score}");
+
         if (Score > MaxScore)
         {
             MaxScore = Score;
@@ -242,7 +242,6 @@ public class ObjectMover : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             spawnerScript.IncreaseScore(1); // 점수 1 증가
-            Debug.Log($"점수가 업데이트되었습니다: {spawnerScript.Score}");
             Destroy(gameObject); // 바닥에 충돌하면 제거
         }
     }

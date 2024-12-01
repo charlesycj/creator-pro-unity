@@ -2041,9 +2041,9 @@ MonoBehaviour:
   - {fileID: 7323223141508106944, guid: 253c6087b7df29245a8423fb93bceb2e, type: 3}
   stage3DownwardPrefabs:
   - {fileID: 7323223141508106944, guid: 253c6087b7df29245a8423fb93bceb2e, type: 3}
-  SpeedBuffPrefab: {fileID: 4212252878639775101, guid: cc53ab89614a68e43924640c6bbb3d2b, type: 3}
-  ShieldBuffPrefab: {fileID: 4757777723656294561, guid: a12b21a1c8646a64792fa4a7da4e12e9, type: 3}
-  HideBuffPrefab: {fileID: 3944674571305693918, guid: 759a700067f86c342bb307a1ee5139fa, type: 3}
+  SpeedBuffPrefab: {fileID: 7105082956661526811, guid: 6e38ad166ab73974e981100be35ad4aa, type: 3}
+  ShieldBuffPrefab: {fileID: 1319792513950287898, guid: 0bcf4dbfebe61314f854e18f257b35d1, type: 3}
+  HideBuffPrefab: {fileID: 278405073897186629, guid: 8527b70ef4694324e8e132bb524c3665, type: 3}
   scorePrefab: {fileID: 1468520438}
   scoreTextMesh: {fileID: 1468520440}
   objectSpawnInterval: 1
