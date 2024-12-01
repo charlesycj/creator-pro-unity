@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SocialPlatforms.Impl;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,22 +10,45 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject[] stage2UpwardPrefabs;
     [SerializeField] private GameObject[] stage2DownwardPrefabs;
     [SerializeField] private GameObject[] stage3UpwardPrefabs;
-    [SerializeField] private GameObject[] stage3DownwardPrefabs; 
+    [SerializeField] private GameObject[] stage3DownwardPrefabs;
 
     [SerializeField] private GameObject SpeedBuffPrefab;
     [SerializeField] private GameObject ShieldBuffPrefab;
     [SerializeField] private GameObject HideBuffPrefab;
 
-   
+    [SerializeField] public GameObject scorePrefab; // Score 프리팹 참조
+    [SerializeField] private TextMeshProUGUI scoreTextMesh;
+
     public float objectSpawnInterval = 1f; // 오브젝트 생성 간격
     public float buffSpawnInterval = 15f;   // 버프 생성 간격 (변경되지 않음)
     private float timeElapsed = 0f;
     private bool gameStopped = false;
-    private float gravityScale = 10f;
+    private float gravityScale = 20f;
     public int currentStage = 1;
+    private GameObject scoreObject;
+
+
+    public int Score = 0; //현재 점수
+    public int MaxScore; //최고점수 
 
     void Start()
     {
+        // 최고 점수 불러오기
+        MaxScore = PlayerPrefs.GetInt("MaxScore", 0); // 기본값은 0
+        UpdateScoreText(); // 초기 점수 갱신
+
+        //스코어 텍스트 설정
+        if (scorePrefab != null)
+        {
+            // scorePrefab이 씬에 존재한다고 가정하고, 그 안에 있는 TextMeshProUGUI를 찾음
+            scoreTextMesh = scorePrefab.GetComponentInChildren<TextMeshProUGUI>();
+
+            if (scoreTextMesh != null)
+            {
+                UpdateScoreText(); // 초기 점수 표시
+            }
+        }
+
         // 오브젝트 생성 시작
         InvokeRepeating(nameof(SpawnUpwardObject), 0f, objectSpawnInterval);
         InvokeRepeating(nameof(SpawnDownwardObject), 0f, objectSpawnInterval);
@@ -33,6 +58,29 @@ public class GameManager : MonoBehaviour
         InvokeRepeating(nameof(SpawnDownwardBuff), buffSpawnInterval / 2, buffSpawnInterval);
     }
 
+    public void IncreaseScore(int amount)
+    {
+        Score += amount;
+        Debug.Log($"점수가 {amount}만큼 증가했습니다. 현재 점수: {Score}");
+        if (Score > MaxScore)
+        {
+            MaxScore = Score;
+            Debug.Log($"최고 점수가 갱신되었습니다: {MaxScore}");
+
+            // 최고 점수 저장
+            PlayerPrefs.SetInt("MaxScore", MaxScore);
+            PlayerPrefs.Save(); // 변경 사항을 저장
+        }
+        UpdateScoreText();
+    }
+
+    private void UpdateScoreText()
+    {
+        if (scoreTextMesh != null)
+        {
+            scoreTextMesh.text = $"Score:{Score:D5}"; // 5자리로 점수 표시
+        }
+    }
     void Update()
     {
         if (gameStopped) return;
@@ -67,14 +115,14 @@ public class GameManager : MonoBehaviour
     {
         if (gameStopped) return;
         SpawnObject(GetStagePrefab(currentStage, true), new Vector3(Random.Range(-850f, 850f), -425f, 0f), -gravityScale);
-        
+
     }
 
     public void SpawnDownwardObject()
     {
         if (gameStopped) return;
         SpawnObject(GetStagePrefab(currentStage, false), new Vector3(Random.Range(-850f, 850f), 425f, 0f), gravityScale);
-        
+
     }
 
     private GameObject GetStagePrefab(int stage, bool isUpward)
@@ -108,9 +156,9 @@ public class GameManager : MonoBehaviour
         int buffType = Random.Range(1, 4);
         return buffType switch
         {
-            1 => SpeedBuffPrefab,
-            2 => ShieldBuffPrefab,
-            3 => HideBuffPrefab,
+            1 => SpeedBuffPrefab, //1은 속도증가 버프
+            2 => ShieldBuffPrefab,//2는 1회용보호막
+            3 => HideBuffPrefab, //3은 5초무적
             _ => null
         };
     }
@@ -184,6 +232,7 @@ public class ObjectMover : MonoBehaviour
 
             // 게임 오버 처리
             spawnerScript.StopGame();
+            Destroy(gameObject);
             Debug.Log("충돌로 게임 오버!");
             playerController.playerASpeed = 0;
             playerController.playerBSpeed = 0;
@@ -192,6 +241,8 @@ public class ObjectMover : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Ground"))
         {
+            spawnerScript.IncreaseScore(1); // 점수 1 증가
+            Debug.Log($"점수가 업데이트되었습니다: {spawnerScript.Score}");
             Destroy(gameObject); // 바닥에 충돌하면 제거
         }
     }
@@ -251,11 +302,12 @@ public class BuffMover : MonoBehaviour
             }
             Destroy(gameObject);
         }
-       
+
 
         if (collision.gameObject.CompareTag("Ground"))
         {
-            Destroy(gameObject);
+            Debug.Log("버프아이템 제거");
+            Destroy(gameObject); //바닥에 충돌하면 제거
         }
     }
     void OnCollisionStay2D(Collision2D collision)
@@ -318,9 +370,4 @@ public class BuffMover : MonoBehaviour
         // 은신 상태 비활성화
         playerController.SetPlayerHide(false, isPlayerA, duration);
     }
-
 }
-
-
-
-

@@ -143,7 +143,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      LizardB_Run2_0: 7511577894607399826
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
