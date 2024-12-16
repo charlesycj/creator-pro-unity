@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8660975438042901339}
   m_Layer: 0
   m_Name: "\uACAC\uACE0\uD55C \uC9C0\uB801\uC774(\uBC29\uC5B4)_0"
-  m_TagString: SpeedBuff
+  m_TagString: ShieldBuff
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

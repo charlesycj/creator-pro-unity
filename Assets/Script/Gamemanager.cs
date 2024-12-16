@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviour
 
     public void StopGame() //게임정지시 오브젝트 생성 정지
     {
-        Destroy(gameObject);
+        
         gameStopped = true;
         CancelInvoke(nameof(SpawnUpwardObject));
         CancelInvoke(nameof(SpawnDownwardObject));
@@ -220,8 +220,36 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt("MaxScore", MaxScore);
             PlayerPrefs.Save(); // 변경 사항을 저장
         }
+
+        // 화면에 있는 모든 장애물 및 버프 제거
+        ClearAllObstaclesAndBuffs();
         // 최고 점수 텍스트 갱신
         UpdateBestScoreText();
+    }
+
+    // 장애물 및 버프 제거 함수
+    private void ClearAllObstaclesAndBuffs()
+    {
+
+        // 모든 태그를 배열로 정의
+        string[] buffTags = { "SpeedBuff", "ShieldBuff", "HideBuff" };
+        // 장애물 제거
+        GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Avoid");
+        foreach (GameObject obstacle in obstacles)
+        {
+            Destroy(obstacle);
+        }
+
+        foreach (string tag in buffTags)
+        {
+            GameObject[] buffs = GameObject.FindGameObjectsWithTag(tag);
+            foreach (GameObject buff in buffs)
+            {
+                Destroy(buff);
+            }
+        }
+        Debug.Log("화면의 모든 장애물과 버프가 제거되었습니다.");
+
     }
 }
 
