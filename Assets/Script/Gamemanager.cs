@@ -5,6 +5,7 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+   
     [SerializeField] private GameObject[] stage1UpwardPrefabs;
     [SerializeField] private GameObject[] stage1DownwardPrefabs;
     [SerializeField] private GameObject[] stage2UpwardPrefabs;
@@ -17,7 +18,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject HideBuffPrefab;
 
     [SerializeField] public GameObject scorePrefab; // Score 프리팹 참조
-    [SerializeField] private TextMeshProUGUI scoreTextMesh;
+    [SerializeField] private TextMeshProUGUI scoreTextMesh; //현재 점수 텍스트
+    [SerializeField] private TextMeshProUGUI bestScoreTextMesh; // 최고 점수 텍스트
 
     public float objectSpawnInterval = 1f; // 오브젝트 생성 간격
     public float buffSpawnInterval = 15f;   // 버프 생성 간격 (변경되지 않음)
@@ -36,6 +38,7 @@ public class GameManager : MonoBehaviour
         // 최고 점수 불러오기
         MaxScore = PlayerPrefs.GetInt("MaxScore", 0); // 기본값은 0
         UpdateScoreText(); // 초기 점수 갱신
+        UpdateBestScoreText(); // 최고 점수 텍스트 초기화
 
         //스코어 텍스트 설정
         if (scorePrefab != null)
@@ -79,6 +82,13 @@ public class GameManager : MonoBehaviour
         if (scoreTextMesh != null)
         {
             scoreTextMesh.text = $"Score:{Score:D5}"; // 5자리로 점수 표시
+        }
+    }
+    private void UpdateBestScoreText()
+    {
+        if (bestScoreTextMesh != null)
+        {
+            bestScoreTextMesh.text = $"Best Score: {MaxScore:D5}"; // 최고 점수를 5자리로 표시
         }
     }
     void Update()
@@ -193,11 +203,25 @@ public class GameManager : MonoBehaviour
 
     public void StopGame() //게임정지시 오브젝트 생성 정지
     {
+        Destroy(gameObject);
         gameStopped = true;
         CancelInvoke(nameof(SpawnUpwardObject));
         CancelInvoke(nameof(SpawnDownwardObject));
         CancelInvoke(nameof(SpawnUpwardBuff));
         CancelInvoke(nameof(SpawnDownwardBuff));
+
+        // 현재 점수가 최고 점수보다 높으면 갱신
+        if (Score > MaxScore)
+        {
+            MaxScore = Score;
+            Debug.Log($"최고 점수가 갱신되었습니다: {MaxScore}");
+
+            // 최고 점수 저장
+            PlayerPrefs.SetInt("MaxScore", MaxScore);
+            PlayerPrefs.Save(); // 변경 사항을 저장
+        }
+        // 최고 점수 텍스트 갱신
+        UpdateBestScoreText();
     }
 }
 

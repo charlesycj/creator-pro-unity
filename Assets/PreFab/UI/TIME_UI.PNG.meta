@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 56e2befa816bbdd448106842dd5d7562
+guid: e9def7498a84fb1448da048beecf2518
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3296451020672666364
-    second: BEST SCORE UI_0
+      213: -736890441114790664
+    second: TIME_UI_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -96,30 +96,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 3
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BEST SCORE UI_0
+      name: TIME_UI_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 590
-        height: 90
+        width: 400
+        height: 50
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -127,8 +114,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 405f4551347a042d0800000000000000
-      internalID: -3296451020672666364
+      spriteID: 8f4d8fa4c0a06c5f0800000000000000
+      internalID: -736890441114790664
       vertices: []
       indices: 
       edges: []
@@ -143,8 +130,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      BEST SCORE UI_0: -3296451020672666364
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
