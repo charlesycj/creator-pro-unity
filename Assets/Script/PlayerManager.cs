@@ -59,7 +59,7 @@ public class PlayerManager : MonoBehaviour
             maxX = (groundCenter + groundWidth / 2) - 30;
         }
     }
-
+        
     void FixedUpdate()
     {
         if (!isGameOver)
@@ -68,6 +68,7 @@ public class PlayerManager : MonoBehaviour
             // 플레이어 A와 B의 이동을 처리
             HandlePlayerMovement(playerA, rigidA, rendererA, playerASpeed, playerALeftKey, playerARightKey);
             HandlePlayerMovement(playerB, rigidB, rendererB, playerBSpeed, playerBLeftKey, playerBRightKey);
+
         }
     }
 
@@ -93,6 +94,17 @@ public class PlayerManager : MonoBehaviour
         Vector3 clampedPosition = player.transform.position;
         clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
         player.transform.position = clampedPosition;
+
+        // 애니메이션 처리
+        Animator playerAnim = player.GetComponent<Animator>();
+        if (h == 0) // 멈춘 상태
+        {
+            playerAnim.SetBool("isRunning", false);
+        }
+        else // 움직이는 상태
+        {
+            playerAnim.SetBool("isRunning", true);
+        }
     }
 
 
