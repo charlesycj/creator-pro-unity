@@ -729,6 +729,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 280660038}
   m_CullTransparentMesh: 1
+--- !u!1 &342262134
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 342262136}
+  - component: {fileID: 342262135}
+  m_Layer: 0
+  m_Name: PlayTimeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &342262135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342262134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6796219f82021414bb589cb5f1e36fce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playTimeText: {fileID: 642843375}
+--- !u!4 &342262136
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342262134}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -343.4499, y: -174.0362, z: -5.050532}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1431,11 +1476,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6887242016993695759, guid: acfcfa9a4b575fa4ea795027b55eda20, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1359
+      value: 1358.56
       objectReference: {fileID: 0}
     - target: {fileID: 6887242016993695759, guid: acfcfa9a4b575fa4ea795027b55eda20, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -260
+      value: -261.21
       objectReference: {fileID: 0}
     - target: {fileID: 6887242016993695759, guid: acfcfa9a4b575fa4ea795027b55eda20, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2110,9 +2155,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stage1UpwardPrefabs:
-  - {fileID: 7323223141508106944, guid: 253c6087b7df29245a8423fb93bceb2e, type: 3}
+  - {fileID: 1388822170110494221, guid: c5c39a51d85471b4c846f610d4e32c21, type: 3}
   stage1DownwardPrefabs:
-  - {fileID: 7323223141508106944, guid: 253c6087b7df29245a8423fb93bceb2e, type: 3}
+  - {fileID: 3115433129403260210, guid: 6892cb6b6697a964cb0f267b4d904742, type: 3}
   stage2UpwardPrefabs:
   - {fileID: 7323223141508106944, guid: 253c6087b7df29245a8423fb93bceb2e, type: 3}
   stage2DownwardPrefabs:
@@ -2894,3 +2939,4 @@ SceneRoots:
   - {fileID: 1611197993}
   - {fileID: 1196368782}
   - {fileID: 830363652}
+  - {fileID: 342262136}

@@ -164,7 +164,7 @@ public class GameManager : MonoBehaviour
     }
 
     // 버프 스폰 관련 함수
-    public void SpawnUpwardBuff() //올라가는 버프 무작위좌표에 생성
+    public void SpawnUpwardBuff() //올라 는 버프 무작위좌표에 생성
     {
         if (gameStopped) return;
         SpawnBuff(GetRandomBuffPrefab(), new Vector3(Random.Range(-850f, 850f), -425f, 0f), -gravityScale);
