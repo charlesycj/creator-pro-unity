@@ -21,6 +21,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreTextMesh; //현재 점수 텍스트
     [SerializeField] private TextMeshProUGUI bestScoreTextMesh; // 최고 점수 텍스트
 
+    [SerializeField] private Animator playerAnimatorA; // Animator 참조
+    [SerializeField] private Animator playerAnimatorB; // Animator 참조
+
     public float objectSpawnInterval = 1f; // 오브젝트 생성 간격
     public float buffSpawnInterval = 15f;   // 버프 생성 간격 (변경되지 않음)
     private float timeElapsed = 0f;
@@ -32,6 +35,7 @@ public class GameManager : MonoBehaviour
 
     public int Score = 0; //현재 점수
     public int MaxScore; //최고점수 
+
 
     void Start()
     {
@@ -93,6 +97,17 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+        // 게임 정지 후 플레이어 좌우반전 방지
+        if (gameStopped)
+        {
+            if (playerAnimatorA != null)
+                FixPlayerFlip(playerAnimatorA.gameObject);
+
+            if (playerAnimatorB != null)
+                FixPlayerFlip(playerAnimatorB.gameObject);
+        }
+
+
         if (gameStopped) return;
 
         timeElapsed += Time.deltaTime;
@@ -204,11 +219,19 @@ public class GameManager : MonoBehaviour
     public void StopGame() //게임정지시 오브젝트 생성 정지
     {
         
-        gameStopped = true;
+        gameStopped = true; // 게임 정지 상태 플래그 설정
         CancelInvoke(nameof(SpawnUpwardObject));
         CancelInvoke(nameof(SpawnDownwardObject));
         CancelInvoke(nameof(SpawnUpwardBuff));
         CancelInvoke(nameof(SpawnDownwardBuff));
+
+        // Player 사망시 애니메이션 실행
+        if (playerAnimatorA != null || playerAnimatorB != null)
+        {
+            playerAnimatorA.SetTrigger("dead");
+            playerAnimatorB.SetTrigger("dead");
+        }
+
 
         // 현재 점수가 최고 점수보다 높으면 갱신
         if (Score > MaxScore)
@@ -225,6 +248,22 @@ public class GameManager : MonoBehaviour
         ClearAllObstaclesAndBuffs();
         // 최고 점수 텍스트 갱신
         UpdateBestScoreText();
+    }
+
+    // 플레이어 사망시 좌우반전 방지 함수
+    private void FixPlayerFlip(GameObject player)
+    {
+        if (player != null)
+        {
+            var spriteRenderer = player.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+                spriteRenderer.flipX = false;
+
+            // localScale.x를 양수로 강제
+            Vector3 fixedScale = player.transform.localScale;
+            fixedScale.x = Mathf.Abs(fixedScale.x);
+            player.transform.localScale = fixedScale;
+        }
     }
 
     // 장애물 및 버프 제거 함수

@@ -2127,6 +2127,8 @@ MonoBehaviour:
   scorePrefab: {fileID: 1468520438}
   scoreTextMesh: {fileID: 1468520440}
   bestScoreTextMesh: {fileID: 280660040}
+  playerAnimatorA: {fileID: 69246877}
+  playerAnimatorB: {fileID: 535716418}
   objectSpawnInterval: 1
   buffSpawnInterval: 5
   currentStage: 1
