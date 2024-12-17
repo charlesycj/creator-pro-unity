@@ -232,7 +232,6 @@ public class GameManager : MonoBehaviour
             playerAnimatorB.SetTrigger("dead");
         }
 
-
         // 현재 점수가 최고 점수보다 높으면 갱신
         if (Score > MaxScore)
         {
@@ -333,10 +332,28 @@ public class ObjectMover : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             spawnerScript.IncreaseScore(1); // 점수 1 증가
-            Destroy(gameObject); // 바닥에 충돌하면 제거
+
+            Animator enemyAnimator = gameObject.GetComponent<Animator>(); // 충돌한 오브젝트의 애니메이터를 가져옴
+            if (enemyAnimator != null)
+            {
+                enemyAnimator.SetTrigger("explosion"); // 애니메이션 트리거 호출
+            }
+
+            // 애니메이션이 끝난 후에 게임 오브젝트를 삭제하도록 Coroutine 호출
+            StartCoroutine(DestroyAfterAnimation(enemyAnimator));
         }
     }
+    IEnumerator DestroyAfterAnimation(Animator animator)
+    {
+        // 애니메이션 길이만큼 대기
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+
+        // 대기 후 게임 오브젝트 삭제
+        Destroy(gameObject);
+    }
 }
+
+    
 
 public class BuffMover : MonoBehaviour
 {

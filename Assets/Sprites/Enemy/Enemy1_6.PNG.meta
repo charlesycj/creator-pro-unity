@@ -3,8 +3,8 @@ guid: 31fee96371524984bb7c74488d2f0711
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 924633065167708528
-    second: b7_0
+      213: 3591354530830706172
+    second: Enemy1_6_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: b7_0
+      name: Enemy1_6_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1000
-        height: 1000
+        width: 880
+        height: 880
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,8 +140,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 071e6e4bfd4f4dc00800000000000000
-      internalID: 924633065167708528
+      spriteID: cf567a00bed07d130800000000000000
+      internalID: 3591354530830706172
       vertices: []
       indices: 
       edges: []
@@ -156,8 +156,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      b7_0: 924633065167708528
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

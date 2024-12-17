@@ -2155,17 +2155,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stage1UpwardPrefabs:
-  - {fileID: 1388822170110494221, guid: c5c39a51d85471b4c846f610d4e32c21, type: 3}
+  - {fileID: 3353881796919784866, guid: f5ecf9defaba6e7429c1d40171168071, type: 3}
   stage1DownwardPrefabs:
-  - {fileID: 3115433129403260210, guid: 6892cb6b6697a964cb0f267b4d904742, type: 3}
+  - {fileID: 1388822170110494221, guid: c5c39a51d85471b4c846f610d4e32c21, type: 3}
   stage2UpwardPrefabs:
-  - {fileID: 7323223141508106944, guid: 253c6087b7df29245a8423fb93bceb2e, type: 3}
+  - {fileID: 3353881796919784866, guid: f5ecf9defaba6e7429c1d40171168071, type: 3}
   stage2DownwardPrefabs:
-  - {fileID: 7323223141508106944, guid: 253c6087b7df29245a8423fb93bceb2e, type: 3}
+  - {fileID: 3353881796919784866, guid: f5ecf9defaba6e7429c1d40171168071, type: 3}
   stage3UpwardPrefabs:
-  - {fileID: 7323223141508106944, guid: 253c6087b7df29245a8423fb93bceb2e, type: 3}
+  - {fileID: 1388822170110494221, guid: c5c39a51d85471b4c846f610d4e32c21, type: 3}
   stage3DownwardPrefabs:
-  - {fileID: 7323223141508106944, guid: 253c6087b7df29245a8423fb93bceb2e, type: 3}
+  - {fileID: 1388822170110494221, guid: c5c39a51d85471b4c846f610d4e32c21, type: 3}
   SpeedBuffPrefab: {fileID: 7105082956661526811, guid: 6e38ad166ab73974e981100be35ad4aa, type: 3}
   ShieldBuffPrefab: {fileID: 1319792513950287898, guid: 0bcf4dbfebe61314f854e18f257b35d1, type: 3}
   HideBuffPrefab: {fileID: 278405073897186629, guid: 8527b70ef4694324e8e132bb524c3665, type: 3}
@@ -2930,6 +2930,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 1276294032}
+  - {fileID: 342262136}
   - {fileID: 28619791}
   - {fileID: 968528492}
   - {fileID: 643721180}
@@ -2939,4 +2940,3 @@ SceneRoots:
   - {fileID: 1611197993}
   - {fileID: 1196368782}
   - {fileID: 830363652}
-  - {fileID: 342262136}
