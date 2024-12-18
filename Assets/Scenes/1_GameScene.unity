@@ -2155,7 +2155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stage1UpwardPrefabs:
-  - {fileID: 3353881796919784866, guid: f5ecf9defaba6e7429c1d40171168071, type: 3}
+  - {fileID: 3115433129403260210, guid: 6892cb6b6697a964cb0f267b4d904742, type: 3}
   stage1DownwardPrefabs:
   - {fileID: 1388822170110494221, guid: c5c39a51d85471b4c846f610d4e32c21, type: 3}
   stage2UpwardPrefabs:

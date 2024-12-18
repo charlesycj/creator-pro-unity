@@ -294,11 +294,19 @@ public class GameManager : MonoBehaviour
 public class ObjectMover : MonoBehaviour
 {
     public GameManager spawnerScript;
+    private bool isExploding = false; // explosion 상태 플래그
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        // Player와 충돌 처리
         if (collision.gameObject.CompareTag("Player"))
         {
+            // explosion 상태라면 충돌 무시
+            if (isExploding)
+            {
+                return;
+            }
+
             GameObject playerManager = GameObject.Find("PlayerManager");
             PlayerManager playerController = playerManager.GetComponent<PlayerManager>();
             bool isPlayerA = collision.gameObject == playerController.playerA;
@@ -326,23 +334,41 @@ public class ObjectMover : MonoBehaviour
             Debug.Log("충돌로 게임 오버!");
             playerController.playerASpeed = 0;
             playerController.playerBSpeed = 0;
-            Destroy(gameObject); // 장애물 제거
         }
 
+        // Ground와 충돌 처리
         if (collision.gameObject.CompareTag("Ground"))
         {
             spawnerScript.IncreaseScore(1); // 점수 1 증가
 
-            Animator enemyAnimator = gameObject.GetComponent<Animator>(); // 충돌한 오브젝트의 애니메이터를 가져옴
+            Animator enemyAnimator = gameObject.GetComponent<Animator>();
             if (enemyAnimator != null)
             {
                 enemyAnimator.SetTrigger("explosion"); // 애니메이션 트리거 호출
+                isExploding = true; // explosion 상태로 설정
             }
+
+            // explosion 상태에서 충돌을 트리거로 전환 : explosion상태에서 enemy와 충돌 방지
+            Collider2D collider = GetComponent<Collider2D>();
+            if (collider != null)
+            {
+                collider.isTrigger = true; 
+            }
+
+            // Rigidbody2D 중력 비활성화 및 속도 초기화 : enemy explosion상태에서 collider가 없어서 내려가는 문제 방지
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.velocity = Vector2.zero;       // 속도 초기화
+                rb.gravityScale = 0;             // 중력 비활성화
+            }
+
 
             // 애니메이션이 끝난 후에 게임 오브젝트를 삭제하도록 Coroutine 호출
             StartCoroutine(DestroyAfterAnimation(enemyAnimator));
         }
     }
+
     IEnumerator DestroyAfterAnimation(Animator animator)
     {
         // 애니메이션 길이만큼 대기
@@ -353,7 +379,8 @@ public class ObjectMover : MonoBehaviour
     }
 }
 
-    
+
+
 
 public class BuffMover : MonoBehaviour
 {
