@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
         timeElapsed += Time.deltaTime;
 
         // 3분마다 스테이지 전환
-        if (timeElapsed >= 180.0f)
+        if (timeElapsed >= 5f)
         {
             gravityScale += 5f;
             timeElapsed = 0f;
