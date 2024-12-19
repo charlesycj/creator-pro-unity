@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 
 public class GameManager : MonoBehaviour
 {
-   
+   //떨어지는 장애물 관리
     [SerializeField] private GameObject[] stage1UpwardPrefabs;
     [SerializeField] private GameObject[] stage1DownwardPrefabs;
     [SerializeField] private GameObject[] stage2UpwardPrefabs;
@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject[] stage3UpwardPrefabs;
     [SerializeField] private GameObject[] stage3DownwardPrefabs;
 
+    //떨어지는 버프 관리
     [SerializeField] private GameObject SpeedBuffPrefab;
     [SerializeField] private GameObject ShieldBuffPrefab;
     [SerializeField] private GameObject HideBuffPrefab;
@@ -29,7 +30,7 @@ public class GameManager : MonoBehaviour
     public float buffSpawnInterval = 15f;   // 버프 생성 간격 (변경되지 않음)
     private float timeElapsed = 0f;
     private bool gameStopped = false;
-    private float gravityScale = 20f;
+    private float gravityScale = 20f; //중력값
     public int currentStage = 1;
     private GameObject scoreObject;
 
@@ -127,6 +128,12 @@ public class GameManager : MonoBehaviour
 
             // 오브젝트 생성 호출 재설정
             ResetObjectSpawns();
+        }
+        if (Input.GetKeyDown(KeyCode.R)) //테스트용 최고점수 초기화 코드
+        {
+            MaxScore = 0; // R을 누르면 MAXScore를 초기화
+            Debug.Log("최고점수가 초기화 되었습니다");
+            bestScoreTextMesh.text = $"Best Score: {MaxScore:D5}";
         }
     }
 
