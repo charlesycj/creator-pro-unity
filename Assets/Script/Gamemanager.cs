@@ -39,6 +39,9 @@ public class GameManager : MonoBehaviour
     public int MaxScore; //최고점수 
 
     public GameObject gameOverCanvas; // Canvas-GameOver 오브젝트를 참조할 변수
+    public GameObject DeadPlayerA; // Canvas-GameOver 오브젝트를 참조할 변수
+    public GameObject DeadPlayerB; // Canvas-GameOver 오브젝트를 참조할 변수
+    
 
 
     void Start()
@@ -258,13 +261,31 @@ public class GameManager : MonoBehaviour
         // 최고 점수 텍스트 갱신
         UpdateBestScoreText();
 
+        
         // Canvas-GameOver 활성화
         if (gameOverCanvas != null)
         {
-            gameOverCanvas.SetActive(true);
+            GameObject playerManagerObject = GameObject.Find("PlayerManager");
+            if (playerManagerObject != null)
+            {
+                PlayerManager playerManager = playerManagerObject.GetComponent<PlayerManager>();
+
+                gameOverCanvas.SetActive(true);
+                if (playerManager != null)
+                    //DeadPlayer 값 확인
+                    if (playerManager.DeadPlayer == "Player A")
+                    {
+                        // Player A 전용 Canvas 활성화
+                        DeadPlayerA.SetActive(true);
+
+                    }
+                    else if (playerManager.DeadPlayer == "Player B")
+                    {
+                        // Player B 전용 Canvas 활성화                                       
+                        DeadPlayerB.SetActive(true);
+                    }
+            }                       
         }
-
-
     }
 
     // 플레이어 사망시 좌우반전 방지 함수
@@ -362,6 +383,7 @@ public class ObjectMover : MonoBehaviour
             Debug.Log("충돌로 게임 오버!");
             playerController.playerASpeed = 0;
             playerController.playerBSpeed = 0;
+
         }
 
         // Ground와 충돌 처리

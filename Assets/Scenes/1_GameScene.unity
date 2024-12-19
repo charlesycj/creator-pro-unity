@@ -2667,6 +2667,8 @@ MonoBehaviour:
   Score: 0
   MaxScore: 0
   gameOverCanvas: {fileID: 1996128328}
+  DeadPlayerA: {fileID: 1002835361}
+  DeadPlayerB: {fileID: 1046034544}
 --- !u!4 &1276294032
 Transform:
   m_ObjectHideFlags: 0
