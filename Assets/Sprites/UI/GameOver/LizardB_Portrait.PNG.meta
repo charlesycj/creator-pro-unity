@@ -156,7 +156,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      LizardB_Portrait_0: -6682138670613056205
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
