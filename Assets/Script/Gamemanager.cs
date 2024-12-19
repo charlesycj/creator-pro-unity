@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
 
 
     public int Score = 0; //현재 점수
-    public int MaxScore; //최고점수 
+    public int BestScore; //최고점수 
 
     public GameObject gameOverCanvas; // Canvas-GameOver 오브젝트를 참조할 변수
     public GameObject DeadPlayerA; // Canvas-GameOver 오브젝트를 참조할 변수
@@ -46,8 +46,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+
         // 최고 점수 불러오기
-        MaxScore = PlayerPrefs.GetInt("MaxScore", 0); // 기본값은 0
+        BestScore = PlayerPrefs.GetInt("BestScore", 0); // 기본값은 0
         UpdateScoreText(); // 초기 점수 갱신
         UpdateBestScoreText(); // 최고 점수 텍스트 초기화
 
@@ -70,19 +71,32 @@ public class GameManager : MonoBehaviour
         // 버프 생성 시작 (스테이지에 따라 변경 없음)
         InvokeRepeating(nameof(SpawnUpwardBuff), 0f, buffSpawnInterval);
         InvokeRepeating(nameof(SpawnDownwardBuff), buffSpawnInterval / 2, buffSpawnInterval);
+
+        // 0_Loby 씬에서 BestScoreLoby 텍스트 업데이트
+        UpdateBestScoreInLoby();
+
+
     }
 
+    // BestScoreLoby 텍스트를 업데이트하는 함수 추가
+    private void UpdateBestScoreInLoby()
+    {
+        // 0_Loby 씬에서 BestScoreLoby 오브젝트를 찾아서 텍스트를 업데이트
+        //TextMeshProUGUI bestScoreLobyText = GameObject.Find("BestScoreLoby")?.GetComponent<TextMeshProUGUI>();
+
+       
+    }
     public void IncreaseScore(int amount)
     {
         Score += amount;
 
-        if (Score > MaxScore)
+        if (Score > BestScore)
         {
-            MaxScore = Score;
-            Debug.Log($"최고 점수가 갱신되었습니다: {MaxScore}");
+            BestScore = Score;
+            Debug.Log($"최고 점수가 갱신되었습니다: {BestScore}");
 
             // 최고 점수 저장
-            PlayerPrefs.SetInt("MaxScore", MaxScore);
+            PlayerPrefs.SetInt("BestScore", BestScore);
             PlayerPrefs.Save(); // 변경 사항을 저장
         }
         UpdateScoreText();
@@ -99,7 +113,7 @@ public class GameManager : MonoBehaviour
     {
         if (bestScoreTextMesh != null)
         {
-            bestScoreTextMesh.text = $"Best Score: {MaxScore:D5}"; // 최고 점수를 5자리로 표시
+            bestScoreTextMesh.text = $"Best Score: {BestScore:D5}"; // 최고 점수를 5자리로 표시
         }
     }
     void Update()
@@ -134,9 +148,9 @@ public class GameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.R)) //테스트용 최고점수 초기화 코드
         {
-            MaxScore = 0; // R을 누르면 MAXScore를 초기화
+            BestScore = 0; // R을 누르면 BestScore를 초기화
             Debug.Log("최고점수가 초기화 되었습니다");
-            bestScoreTextMesh.text = $"Best Score: {MaxScore:D5}";
+            bestScoreTextMesh.text = $"Best Score: {BestScore:D5}";
         }
     }
 
@@ -246,13 +260,13 @@ public class GameManager : MonoBehaviour
         }
 
         // 현재 점수가 최고 점수보다 높으면 갱신
-        if (Score > MaxScore)
+        if (Score > BestScore)
         {
-            MaxScore = Score;
-            Debug.Log($"최고 점수가 갱신되었습니다: {MaxScore}");
+            BestScore = Score;
+            Debug.Log($"최고 점수가 갱신되었습니다: {BestScore}");
 
             // 최고 점수 저장
-            PlayerPrefs.SetInt("MaxScore", MaxScore);
+            PlayerPrefs.SetInt("Score", BestScore);
             PlayerPrefs.Save(); // 변경 사항을 저장
         }
 
