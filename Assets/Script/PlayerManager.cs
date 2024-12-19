@@ -38,6 +38,8 @@ public class PlayerManager : MonoBehaviour
 
     private bool isGameOver = false; // 게임오버 상태 플래그
 
+    public string DeadPlayer;
+
     void Start()
     {
         // Player A 초기화

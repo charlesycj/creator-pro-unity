@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SocialPlatforms.Impl;
 using TMPro;
+using JetBrains.Annotations;
 
 public class GameManager : MonoBehaviour
 {
@@ -35,6 +36,8 @@ public class GameManager : MonoBehaviour
 
     public int Score = 0; //현재 점수
     public int MaxScore; //최고점수 
+
+    public GameObject gameOverCanvas; // Canvas-GameOver 오브젝트를 참조할 변수
 
 
     void Start()
@@ -247,6 +250,14 @@ public class GameManager : MonoBehaviour
         ClearAllObstaclesAndBuffs();
         // 최고 점수 텍스트 갱신
         UpdateBestScoreText();
+
+        // Canvas-GameOver 활성화
+        if (gameOverCanvas != null)
+        {
+            gameOverCanvas.SetActive(true);
+        }
+
+
     }
 
     // 플레이어 사망시 좌우반전 방지 함수
@@ -329,6 +340,16 @@ public class ObjectMover : MonoBehaviour
             }
 
             // 게임 오버 처리
+            if (collision.gameObject == playerController.playerA)
+            {
+                Debug.Log("Player A가 죽었습니다. 게임 오버!");
+                playerController.DeadPlayer = "Player A";
+            }
+            else if (collision.gameObject == playerController.playerB)
+            {
+                Debug.Log("Player B가 죽었습니다. 게임 오버!");
+                playerController.DeadPlayer = "Player B";
+            }
             spawnerScript.StopGame();
             Destroy(gameObject);
             Debug.Log("충돌로 게임 오버!");
