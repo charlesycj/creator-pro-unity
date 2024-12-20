@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject ShieldBuffPrefab;
     [SerializeField] private GameObject HideBuffPrefab;
 
+
     [SerializeField] public GameObject scorePrefab; // Score 프리팹 참조
     [SerializeField] private TextMeshProUGUI scoreTextMesh1; //현재 점수 텍스트
     [SerializeField] private TextMeshProUGUI scoreTextMesh2; //현재 점수 텍스트
@@ -79,8 +80,6 @@ public class GameManager : MonoBehaviour
 
         // 0_Loby 씬에서 BestScoreLoby 텍스트 업데이트
         UpdateBestScoreInLoby();
-
-
     }
 
     // BestScoreLoby 텍스트를 업데이트하는 함수 추가
@@ -146,8 +145,10 @@ public class GameManager : MonoBehaviour
         timeElapsed += Time.deltaTime;
 
         // 3분마다 스테이지 전환
-        if (timeElapsed >= 5f)
+        if (timeElapsed >= 5f) //테스트 목적으로 5초로 설정했습니다 꼭 수정해주세요
         {
+            SoundManager soundManager = FindObjectOfType<SoundManager>(); // SoundManager 찾기
+            soundManager.playLevelTransition(); // 속도 버프 사운드 재생
             gravityScale += 5f;
             timeElapsed = 0f;
             currentStage = currentStage == 3 ? 1 : currentStage + 1;
@@ -257,7 +258,9 @@ public class GameManager : MonoBehaviour
 
     public void StopGame() //게임정지시 오브젝트 생성 정지
     {
-        
+
+        SoundManager soundManager = FindObjectOfType<SoundManager>(); // SoundManager 찾기
+        soundManager.PlayGameOverSound(); // 속도 버프 사운드 재생
         gameStopped = true; // 게임 정지 상태 플래그 설정
         CancelInvoke(nameof(SpawnUpwardObject));
         CancelInvoke(nameof(SpawnDownwardObject));
@@ -471,6 +474,8 @@ public class BuffMover : MonoBehaviour
             PlayerManager playerController = playerManager.GetComponent<PlayerManager>();
             bool isPlayerA = collision.gameObject == playerController.playerA;
 
+            SoundManager soundManager = FindObjectOfType<SoundManager>(); // SoundManager 찾기
+
             // 은신 상태와 충돌 처리
             if (playerController.IsPlayerHide(isPlayerA) && !CompareTag("SpeedBuff") && !CompareTag("ShieldBuff") && !CompareTag("HideBuff"))
             {
@@ -486,8 +491,11 @@ public class BuffMover : MonoBehaviour
                     playerController.activeSpeedBuffCoroutines, isPlayerA,
                     ApplySpeedBuff(playerController, isPlayerA)
                 );
+
+                soundManager.PlaySpeedBuffSound(); // 속도 버프 사운드 재생
                 Debug.Log("스피드업 버프 획득");
             }
+
             else if (CompareTag("HideBuff"))
             {
                 float hideBuffDuration = 5f; // 은신 버프 지속 시간 (초)
@@ -496,19 +504,23 @@ public class BuffMover : MonoBehaviour
                     playerController.activeHideBuffCoroutines, isPlayerA,
                     ApplyHideBuff(hideBuffDuration, isPlayerA)
                 );
+
+                soundManager.PlayHideBuffSound(); // 은신 버프 사운드 재생
                 Debug.Log("은신 버프 획득");
             }
+
             else if (CompareTag("ShieldBuff"))
             {
                 if (!playerController.HasShield(isPlayerA)) // 이미 실드가 없는 경우에만 적용
                 {
-                    playerController.ApplyShieldBuff(isPlayerA);
+                    playerController.ApplyShieldBuff(isPlayerA);        
                     Debug.Log("실드 버프 획득");
                 }
                 else
-                {
+                {   
                     Debug.Log("실드가 이미 활성화되어 있습니다.");
                 }
+                soundManager.PlayShieldBuffSound(); // 실드 버프 사운드 재생
             }
             Destroy(gameObject);
         }
@@ -555,13 +567,27 @@ public class BuffMover : MonoBehaviour
         else
             playerController.playerBSpeed += 200;
 
-        yield return new WaitForSeconds(10f); // 10초 지속
+        yield return new WaitForSeconds(2f); // 첫 2초 동안 고정된 증가 유지
 
-        // 버프 해제
-        if (isPlayerA)
-            playerController.playerASpeed -= 200;
-        else
-            playerController.playerBSpeed -= 200;
+        // 남은 2초 동안 0.5초 간격으로 속도를 줄임
+        int decrementAmount = 50; // 0.5초마다 줄어드는 양
+        int steps = 4; // 2초 동안 0.5초 간격 = 4단계
+        for (int i = 0; i < steps; i++)
+        {
+            if (isPlayerA)
+            {
+                playerController.playerASpeed -= decrementAmount;
+                Debug.Log("A의 속도 50감소");
+            }
+
+            else
+            {
+                playerController.playerBSpeed -= decrementAmount;
+                Debug.Log("B의 속도 50감소");
+            }
+    
+            yield return new WaitForSeconds(0.5f);
+        }
 
         Debug.Log("스피드업 버프 해제");
     }
