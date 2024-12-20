@@ -20,7 +20,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject HideBuffPrefab;
 
     [SerializeField] public GameObject scorePrefab; // Score 프리팹 참조
-    [SerializeField] private TextMeshProUGUI scoreTextMesh; //현재 점수 텍스트
+    [SerializeField] private TextMeshProUGUI scoreTextMesh1; //현재 점수 텍스트
+    [SerializeField] private TextMeshProUGUI scoreTextMesh2; //현재 점수 텍스트
     [SerializeField] private TextMeshProUGUI bestScoreTextMesh; // 최고 점수 텍스트
 
     [SerializeField] private Animator playerAnimatorA; // Animator 참조
@@ -29,7 +30,7 @@ public class GameManager : MonoBehaviour
     public float objectSpawnInterval = 1f; // 오브젝트 생성 간격
     public float buffSpawnInterval = 15f;   // 버프 생성 간격 (변경되지 않음)
     private float timeElapsed = 0f;
-    private bool gameStopped = false;
+    public bool gameStopped = false;
     private float gravityScale = 20f; //중력값
     public int currentStage = 1;
     private GameObject scoreObject;
@@ -56,11 +57,15 @@ public class GameManager : MonoBehaviour
         if (scorePrefab != null)
         {
             // scorePrefab이 씬에 존재한다고 가정하고, 그 안에 있는 TextMeshProUGUI를 찾음
-            scoreTextMesh = scorePrefab.GetComponentInChildren<TextMeshProUGUI>();
+            scoreTextMesh1 = scorePrefab.GetComponentInChildren<TextMeshProUGUI>();
 
-            if (scoreTextMesh != null)
+            if (scoreTextMesh1 != null)
             {
                 UpdateScoreText(); // 초기 점수 표시
+            }
+            if (scoreTextMesh2 != null)
+            {
+                scoreTextMesh2.text = $"Score: {Score:D5}"; // 두 번째 점수 UI 초기화
             }
         }
 
@@ -104,9 +109,16 @@ public class GameManager : MonoBehaviour
 
     private void UpdateScoreText()
     {
-        if (scoreTextMesh != null)
+        // 첫 번째 텍스트 UI에 점수 갱신
+        if (scoreTextMesh1 != null)
         {
-            scoreTextMesh.text = $"Score:{Score:D5}"; // 5자리로 점수 표시
+            scoreTextMesh1.text = $"Score: {Score:D5}"; // 5자리로 점수 표시
+        }
+
+        // 두 번째 텍스트 UI에도 점수 갱신
+        if (scoreTextMesh2 != null)
+        {
+            scoreTextMesh2.text = $"Score: {Score:D5}"; // 5자리로 점수 표시
         }
     }
     private void UpdateBestScoreText()
