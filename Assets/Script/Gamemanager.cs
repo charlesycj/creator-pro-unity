@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Animator playerAnimatorB; // Animator 참조
 
     public float objectSpawnInterval = 1f; // 오브젝트 생성 간격
-    public float buffSpawnInterval = 15f;   // 버프 생성 간격 (변경되지 않음)
+    public float buffSpawnInterval = 5f;   // 버프 생성 간격 (변경되지 않음)
     private float timeElapsed = 0f;
     public bool gameStopped = false;
     private float gravityScale = 20f; //중력값
@@ -498,7 +498,7 @@ public class BuffMover : MonoBehaviour
 
             else if (CompareTag("HideBuff"))
             {
-                float hideBuffDuration = 5f; // 은신 버프 지속 시간 (초)
+                float hideBuffDuration = 3f; // 은신 버프 지속 시간 (초)
                 // 은신 버프 코루틴 관리
                 playerController.StartManagedCoroutine(
                     playerController.activeHideBuffCoroutines, isPlayerA,
@@ -571,7 +571,7 @@ public class BuffMover : MonoBehaviour
 
         // 남은 2초 동안 0.5초 간격으로 속도를 줄임
         int decrementAmount = 50; // 0.5초마다 줄어드는 양
-        int steps = 4; // 2초 동안 0.5초 간격 = 4단계
+        int steps = 4; // 2초 동안 0.5초 간격 == 속도가 감소하는 횟수
         for (int i = 0; i < steps; i++)
         {
             if (isPlayerA)
@@ -601,9 +601,27 @@ public class BuffMover : MonoBehaviour
         // 은신 상태 활성화
         playerController.SetPlayerHide(true, isPlayerA, duration);
 
-        yield return new WaitForSeconds(duration);
 
-        // 은신 상태 비활성화
-        playerController.SetPlayerHide(false, isPlayerA, duration);
+        float remainingTime = duration;
+
+        //남은 은신시간 측정
+        while (remainingTime > 0) 
+        {
+            if (isPlayerA)
+            {
+                Debug.Log($"A캐릭터의 은신 효과 남은 시간: {remainingTime:F2}초");
+                yield return new WaitForSeconds(0.5f); // 0.5초 간격으로 업데이트
+                remainingTime -= 0.5f;
+            }
+            else if(!isPlayerA)
+            {
+                Debug.Log($"B캐릭터의 은신 효과 남은 시간: {remainingTime:F2}초");
+                yield return new WaitForSeconds(0.5f); // 0.5초 간격으로 업데이트
+                remainingTime -= 0.5f;
+            }
+         }
+
+            // 은신 상태 비활성화
+            playerController.SetPlayerHide(false, isPlayerA, duration);
     }
 }
