@@ -78,18 +78,10 @@ public class GameManager : MonoBehaviour
         InvokeRepeating(nameof(SpawnUpwardBuff), 0f, buffSpawnInterval);
         InvokeRepeating(nameof(SpawnDownwardBuff), buffSpawnInterval / 2, buffSpawnInterval);
 
-        // 0_Loby 씬에서 BestScoreLoby 텍스트 업데이트
-        UpdateBestScoreInLoby();
+
     }
 
-    // BestScoreLoby 텍스트를 업데이트하는 함수 추가
-    private void UpdateBestScoreInLoby()
-    {
-        // 0_Loby 씬에서 BestScoreLoby 오브젝트를 찾아서 텍스트를 업데이트
-        //TextMeshProUGUI bestScoreLobyText = GameObject.Find("BestScoreLoby")?.GetComponent<TextMeshProUGUI>();
 
-       
-    }
     public void IncreaseScore(int amount)
     {
         Score += amount;
@@ -154,7 +146,7 @@ public class GameManager : MonoBehaviour
             currentStage = currentStage == 3 ? 1 : currentStage + 1;
 
             // 오브젝트 생성 간격 감소 (최소값 제한)
-            if (objectSpawnInterval > 0.1f) objectSpawnInterval -= 0.1f;
+            if (objectSpawnInterval > 0.1f) objectSpawnInterval -= 0.01f;
 
             // 오브젝트 생성 호출 재설정
             ResetObjectSpawns();
@@ -604,7 +596,7 @@ public class BuffMover : MonoBehaviour
 
         float remainingTime = duration;
 
-        //남은 은신시간 측정
+        //남은 은신시간 측정s
         while (remainingTime > 0) 
         {
             if (isPlayerA)
