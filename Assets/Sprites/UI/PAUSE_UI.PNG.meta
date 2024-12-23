@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c98a72be247a21141abad48a5bde7282
+guid: 7eee1a2b44cb0a243893581f962cc2b0
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -131,8 +131,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 834
-        height: 209
+        width: 200
+        height: 50
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,8 +156,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      PAUSE_UI_0: 16303578182441306
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
