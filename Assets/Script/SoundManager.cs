@@ -8,7 +8,8 @@ public class SoundManager : MonoBehaviour
     public AudioClip ShieldBuffSound;
     public AudioClip GameOverSound;
     public AudioClip LevelTransition;
-
+    public AudioClip RemoveShield;
+    
     // 사운드 재생
     public void PlaySpeedBuffSound()
     {
@@ -39,5 +40,9 @@ public class SoundManager : MonoBehaviour
         {
             audioSource.PlayOneShot(clip);
         }
+    }
+    public void PlayRemoveShield()
+    {
+        PlaySound(RemoveShield);
     }
 }

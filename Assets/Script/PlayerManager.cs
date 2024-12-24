@@ -40,6 +40,11 @@ public class PlayerManager : MonoBehaviour
 
     public string DeadPlayer;
 
+    public GameObject playerShieldA; // 쉴드A
+    public GameObject playerShieldB; // 쉴드B
+
+    public SoundManager soundManager; // SoundManager 참조
+
     void Start()
     {
         // Player A 초기화
@@ -134,11 +139,13 @@ public class PlayerManager : MonoBehaviour
         {
             playerAIsShieldActive = true;
             playerAHasShield = true;
+            playerShieldA.SetActive(true);
         }
         else if (!isPlayerA && !playerBIsShieldActive)
         {
             playerBIsShieldActive = true;
             playerBHasShield = true;
+            playerShieldB.SetActive(true);
         }
     }
 
@@ -149,11 +156,15 @@ public class PlayerManager : MonoBehaviour
         {
             playerAIsShieldActive = false;
             playerAHasShield = false; // 실드 상태를 명확히 해제
+            playerShieldA.SetActive(false);
+            soundManager.PlayRemoveShield();
         }
         else
         {
             playerBIsShieldActive = false;
             playerBHasShield = false; // 실드 상태를 명확히 해제
+            playerShieldB.SetActive(false);
+            soundManager.PlayRemoveShield();
         }
     }
 

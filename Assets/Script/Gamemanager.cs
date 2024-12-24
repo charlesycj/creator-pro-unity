@@ -43,8 +43,6 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverCanvas; // Canvas-GameOver 오브젝트를 참조할 변수
     public GameObject DeadPlayerA; // Canvas-GameOver 오브젝트를 참조할 변수
     public GameObject DeadPlayerB; // Canvas-GameOver 오브젝트를 참조할 변수
-    
-
 
     void Start()
     {
