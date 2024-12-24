@@ -915,6 +915,9 @@ MonoBehaviour:
   GameOverSound: {fileID: 8300000, guid: 4151da4f118ba5a40bf5dd93cabbe66d, type: 3}
   LevelTransition: {fileID: 8300000, guid: bec84870b4234a64a8c4dfc39c69caf9, type: 3}
   RemoveShield: {fileID: 8300000, guid: beb23743489b9fe47b4ffac2074c1c87, type: 3}
+  stage1BGM: {fileID: 8300000, guid: 5b2e180e26a7d59428cbc0a6a2a59774, type: 3}
+  stage2BGM: {fileID: 8300000, guid: 6b77dae194558f246bdfd2aa0c06007a, type: 3}
+  stage3BGM: {fileID: 8300000, guid: b4d15cfc9a947e044baa76c11a9af38c, type: 3}
 --- !u!82 &287309665
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1455,7 +1458,7 @@ MonoBehaviour:
   - {fileID: 832754332}
   - {fileID: 1194772449}
   - {fileID: 976950591}
-  changeInterval: 5
+  changeInterval: 90
 --- !u!1 &642843373
 GameObject:
   m_ObjectHideFlags: 0
@@ -1643,7 +1646,7 @@ MonoBehaviour:
   - {fileID: 812319685}
   - {fileID: 1205903833}
   - {fileID: 1387433403}
-  changeInterval: 5
+  changeInterval: 90
 --- !u!1 &650107852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1677,7 +1680,7 @@ MonoBehaviour:
   - {fileID: 1007058249}
   - {fileID: 1499987505}
   - {fileID: 1910436643}
-  changeInterval: 5
+  changeInterval: 90
 --- !u!4 &650107854
 Transform:
   m_ObjectHideFlags: 0
@@ -4457,7 +4460,7 @@ MonoBehaviour:
   - {fileID: 191702276}
   - {fileID: 76479721}
   - {fileID: 1660813553}
-  changeInterval: 5
+  changeInterval: 90
 --- !u!1 &1787852269
 GameObject:
   m_ObjectHideFlags: 0

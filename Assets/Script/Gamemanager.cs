@@ -77,6 +77,16 @@ public class GameManager : MonoBehaviour
         InvokeRepeating(nameof(SpawnDownwardBuff), buffSpawnInterval / 2, buffSpawnInterval);
 
 
+        // SoundManager 인스턴스 가져오기
+        SoundManager soundManager = FindObjectOfType<SoundManager>();
+        if (soundManager != null)
+        {
+            soundManager.PlayStageBGM(1); // 초기 스테이지 1 BGM 재생
+        }
+        else
+        {
+            Debug.LogError("SoundManager를 찾을 수 없습니다!");
+        }
     }
 
 
@@ -135,7 +145,7 @@ public class GameManager : MonoBehaviour
         timeElapsed += Time.deltaTime;
 
         // 3분마다 스테이지 전환
-        if (timeElapsed >= 5f) //테스트 목적으로 5초로 설정했습니다 꼭 수정해주세요
+        if (timeElapsed >= 90f) 
         {
             SoundManager soundManager = FindObjectOfType<SoundManager>(); // SoundManager 찾기
             soundManager.playLevelTransition(); // 속도 버프 사운드 재생
@@ -143,15 +153,18 @@ public class GameManager : MonoBehaviour
             timeElapsed = 0f;
             currentStage = currentStage == 3 ? 1 : currentStage + 1;
 
+            // 스테이지에 맞는 BGM 재생
+            soundManager.PlayStageBGM(currentStage);
+
             // 오브젝트 생성 간격 감소 (최소값 제한)
             if (objectSpawnInterval > 0.1f) objectSpawnInterval -= 0.01f;
 
             // 오브젝트 생성 호출 재설정
             ResetObjectSpawns();
         }
-        if (Input.GetKeyDown(KeyCode.R)) //테스트용 최고점수 초기화 코드
+        if (Input.GetKeyDown(KeyCode.F1)) //테스트용 최고점수 초기화 코드
         {
-            BestScore = 0; // R을 누르면 BestScore를 초기화
+            BestScore = 0; // F1을 누르면 BestScore를 초기화
             Debug.Log("최고점수가 초기화 되었습니다");
             bestScoreTextMesh.text = $"Best Score: {BestScore:D5}";
         }
@@ -387,7 +400,7 @@ public class ObjectMover : MonoBehaviour
             }
 
             // 게임 오버 처리
-            if (collision.gameObject == playerController.playerA)
+        /*    if (collision.gameObject == playerController.playerA)
             {
                 Debug.Log("Player A가 죽었습니다. 게임 오버!");
                 playerController.DeadPlayer = "Player A";
@@ -401,7 +414,7 @@ public class ObjectMover : MonoBehaviour
             Destroy(gameObject);
             Debug.Log("충돌로 게임 오버!");
             playerController.playerASpeed = 0;
-            playerController.playerBSpeed = 0;
+            playerController.playerBSpeed = 0;*/
 
         }
 
