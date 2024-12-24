@@ -551,6 +551,19 @@ public class BuffMover : MonoBehaviour
     // 스피드업 버프 적용
     private IEnumerator ApplySpeedBuff(PlayerManager playerController, bool isPlayerA)
     {
+        // Animator 가져오기
+        GameObject player = isPlayerA ? playerController.playerA : playerController.playerB;
+        Animator playerAnimator = player.GetComponent<Animator>();
+
+        if (playerAnimator == null)
+        {
+            Debug.LogError("Animator를 찾을 수 없습니다. 플레이어에 Animator가 추가되어 있는지 확인하세요.");
+            yield break;
+        }
+        // 애니메이션 속도 2배로 증가
+        playerAnimator.speed = 2.5f;
+
+
         // 버프 적용
         if (isPlayerA)
             playerController.playerASpeed += 200;
@@ -578,6 +591,9 @@ public class BuffMover : MonoBehaviour
     
             yield return new WaitForSeconds(0.5f);
         }
+
+        // 애니메이션 속도 복원
+        playerAnimator.speed = 1f;
 
         Debug.Log("스피드업 버프 해제");
     }
