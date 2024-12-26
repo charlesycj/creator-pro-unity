@@ -400,7 +400,7 @@ public class ObjectMover : MonoBehaviour
             }
 
             // 게임 오버 처리
-        /*    if (collision.gameObject == playerController.playerA)
+            if (collision.gameObject == playerController.playerA)
             {
                 Debug.Log("Player A가 죽었습니다. 게임 오버!");
                 playerController.DeadPlayer = "Player A";
@@ -414,7 +414,7 @@ public class ObjectMover : MonoBehaviour
             Destroy(gameObject);
             Debug.Log("충돌로 게임 오버!");
             playerController.playerASpeed = 0;
-            playerController.playerBSpeed = 0;*/
+            playerController.playerBSpeed = 0;
 
         }
 
