@@ -42,6 +42,15 @@ public class ButtonManager : MonoBehaviour
         }
     }
 
+    // Exit 버튼 클릭 시 호출
+    public void ExitGame()
+    {
+        Debug.Log("게임 종료"); // 에디터에서 확인용 로그 출력
+
+        // 게임 종료
+        Application.Quit();
+    }
+
     // ESC 키 입력 처리
     private void Update()
     {
