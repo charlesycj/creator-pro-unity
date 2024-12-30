@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine.SocialPlatforms.Impl;
 using TMPro;
 using JetBrains.Annotations;
+using System;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -39,16 +41,26 @@ public class GameManager : MonoBehaviour
 
     public int Score = 0; //현재 점수
     public int BestScore; //최고점수 
+    public int AccumulatedScore = 0; //누적점수
 
     public GameObject gameOverCanvas; // Canvas-GameOver 오브젝트를 참조할 변수
     public GameObject DeadPlayerA; // Canvas-GameOver 오브젝트를 참조할 변수
     public GameObject DeadPlayerB; // Canvas-GameOver 오브젝트를 참조할 변수
 
+    public Action<int> onStageEntered;
+    public Action<int> onScoreReached;
+    public Action<int> onAccumulatedScoreReached;
+    public Action<int> onBestScoreAchieved;
+
+    public BuffMover buffMover;
+
     void Start()
     {
-
+        onStageEntered?.Invoke(currentStage);
         // 최고 점수 불러오기
         BestScore = PlayerPrefs.GetInt("BestScore", 0); // 기본값은 0
+        BestScore = 0; // 테스트용 최고점수 초기화
+        AccumulatedScore = PlayerPrefs.GetInt("AccumulatedScore", 0); // 누적점수 불러오기
         UpdateScoreText(); // 초기 점수 갱신
         UpdateBestScoreText(); // 최고 점수 텍스트 초기화
 
@@ -93,16 +105,22 @@ public class GameManager : MonoBehaviour
     public void IncreaseScore(int amount)
     {
         Score += amount;
+        onScoreReached?.Invoke(Score);
+
+        AccumulatedScore += amount;
+        PlayerPrefs.SetInt("AccumulatedScore", AccumulatedScore);
+        onAccumulatedScoreReached?.Invoke(AccumulatedScore);
 
         if (Score > BestScore)
         {
             BestScore = Score;
-            Debug.Log($"최고 점수가 갱신되었습니다: {BestScore}");
+            onBestScoreAchieved?.Invoke(BestScore);
+            //Debug.Log($"최고 점수가 갱신되었습니다: {BestScore}");
 
             // 최고 점수 저장
             PlayerPrefs.SetInt("BestScore", BestScore);
-            PlayerPrefs.Save(); // 변경 사항을 저장
         }
+        PlayerPrefs.Save(); // 변경 사항을 저장
         UpdateScoreText();
     }
 
@@ -256,6 +274,7 @@ public class GameManager : MonoBehaviour
 
         var moverScript = newObject.AddComponent<BuffMover>();
         moverScript.spawnerScript = this;
+        buffMover = moverScript;
     }
 
     public void StopGame() //게임정지시 오브젝트 생성 정지
@@ -467,6 +486,8 @@ public class BuffMover : MonoBehaviour
 {
     public GameManager spawnerScript;
 
+    public static Action onItemAcquired;
+
     // 충돌 처리
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -524,6 +545,8 @@ public class BuffMover : MonoBehaviour
                 }
                 soundManager.PlayShieldBuffSound(); // 실드 버프 사운드 재생
             }
+            onItemAcquired?.Invoke();
+
             Destroy(gameObject);
         }
 
