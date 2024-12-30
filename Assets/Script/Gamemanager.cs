@@ -157,13 +157,12 @@ public class GameManager : MonoBehaviour
                 FixPlayerFlip(playerAnimatorB.gameObject);
         }
 
-
         if (gameStopped) return;
 
         timeElapsed += Time.deltaTime;
 
-        // 3분마다 스테이지 전환
-        if (timeElapsed >= 90f) 
+            // 1분마다 스테이지 전환
+            if (timeElapsed >= 60f) 
         {
             SoundManager soundManager = FindObjectOfType<SoundManager>(); // SoundManager 찾기
             soundManager.playLevelTransition(); // 속도 버프 사운드 재생
@@ -175,7 +174,7 @@ public class GameManager : MonoBehaviour
             soundManager.PlayStageBGM(currentStage);
 
             // 오브젝트 생성 간격 감소 (최소값 제한)
-            if (objectSpawnInterval > 0.1f) objectSpawnInterval -= 0.01f;
+            if (objectSpawnInterval > 0.4f) objectSpawnInterval -= 0.1f;
 
             // 오브젝트 생성 호출 재설정
             ResetObjectSpawns();
