@@ -10,6 +10,15 @@ public class GameButtonManager : MonoBehaviour
     public GameObject pauseButton;  // Pause 버튼
     public GameObject resumeButton; // Resume 버튼
 
+    // ESC 키로 Pause를 제어
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseGame();
+        }
+    }
+
     // EXIT 버튼 
     public void ExitGame()
     {
