@@ -156,7 +156,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BIackImage_0: 8594839384858684817
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
