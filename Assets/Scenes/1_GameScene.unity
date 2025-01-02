@@ -3893,7 +3893,12 @@ MonoBehaviour:
   playerAnimatorA: {fileID: 69246877}
   playerAnimatorB: {fileID: 535716418}
   objectSpawnInterval: 4
-  buffSpawnInterval: 3.5
+  minobjectSpawnInterval: 0.4
+  spawnIntervalStep: 0.1
+  buffSpawnInterval: 5
+  minbuffSpawnInterval: 0.4
+  buffspawnIntervalStep: 0.1
+  gravityScale: 20
   gameStopped: 0
   currentStage: 1
   Score: 0
