@@ -29,22 +29,27 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Animator playerAnimatorA; // Animator 참조
     [SerializeField] private Animator playerAnimatorB; // Animator 참조
 
-    [SerializeField] public float objectSpawnInterval = 4f; // 오브젝트 생성 간격
-    [SerializeField] public float minobjectSpawnInterval = 0.4f; // 최소 오브젝트 생성 간격
-    [SerializeField] public float spawnIntervalStep = 0.1f; // 장애물 스폰주기 감소값
+    [SerializeField] private Coroutine objectSpawnCoroutine;//장애물 생성코루틴
+    [SerializeField] public float objectSpawnInterval;//장에물 생성주기
+    [SerializeField] public float minobjectSpawnInterval; // 최소 오브젝트 생성 간격
+    [SerializeField] public float spawnIntervalStep; // 장애물 스폰주기 감소값
 
-    [SerializeField] public float buffSpawnInterval = 5f;   // 버프 생성 간격 
-    [SerializeField] public float minbuffSpawnInterval = 0.4f; // 최소 버프 생성 간격
-    [SerializeField] public float buffspawnIntervalStep = 0.1f; //버프 스폰주기 감소값
-
+    [SerializeField] private Coroutine buffSpawnCoroutine;// 버프아이템 생성코루틴
+    [SerializeField] public float buffSpawnInterval; //버프아이템 생성주기
+    [SerializeField] public float minbuffSpawnInterval; // 최소 버프 생성 간격
+    [SerializeField] public float buffspawnIntervalStep; //버프 스폰주기 감소값
+   
     [SerializeField] private float gravityScale = 20f; //중력값
+
+    //코루틴 실행여부 체크
+    private bool isObjectSpawnCoroutineRunning = false;
+    private bool isBuffSpawnCoroutineRunning = false;
+
     private float timeElapsed = 0f;
-    private float timeElapsedobject= 0f;
     public bool gameStopped = false;
    
     public int currentStage = 1;
     private GameObject scoreObject;
-
 
     public int Score = 0; //현재 점수
     public int BestScore; //최고점수 
@@ -63,6 +68,12 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+
+        // 코루틴 실행
+        objectSpawnCoroutine = StartCoroutine(SpawnObjectsCoroutine());
+        buffSpawnCoroutine = StartCoroutine(SpawnBuffsCoroutine());
+        StartCoroutine(DecreaseSpawnIntervalsCoroutine());
+
         onStageEntered?.Invoke(currentStage);
         // 최고 점수 불러오기
         BestScore = PlayerPrefs.GetInt("BestScore", 0); // 기본값은 0
@@ -87,13 +98,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // 오브젝트 생성 시작
-        InvokeRepeating(nameof(SpawnUpwardObject), 0f, objectSpawnInterval);
-        InvokeRepeating(nameof(SpawnDownwardObject), 0f, objectSpawnInterval);
-
-        // 버프 생성 시작 
-        InvokeRepeating(nameof(SpawnUpwardBuff), 0f, buffSpawnInterval);
-        InvokeRepeating(nameof(SpawnDownwardBuff), 0f, buffSpawnInterval);
+   
 
 
         // SoundManager 인스턴스 가져오기
@@ -108,7 +113,52 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private IEnumerator SpawnObjectsCoroutine()
+    {
+        while (!gameStopped)
+        {
+            // 1초마다 오브젝트 생성 간격 변경
+            yield return new WaitForSeconds(objectSpawnInterval);
 
+            // 장애물 생성 로직
+            SpawnUpwardObject();
+            SpawnDownwardObject();
+        }
+    }
+    private IEnumerator SpawnBuffsCoroutine()
+    {
+        while (!gameStopped)
+        {
+            // 1초마다 오브젝트 생성 간격 변경
+            yield return new WaitForSeconds(buffSpawnInterval);
+
+            // 버프 생성 로직
+            SpawnUpwardBuff();
+            SpawnDownwardBuff();
+    }
+}
+
+    private IEnumerator DecreaseSpawnIntervalsCoroutine()
+    {
+        while (!gameStopped)
+        {
+            yield return new WaitForSeconds(1f); // 1초마다 감소
+
+            // 장애물 스폰 주기 감소
+            if (objectSpawnInterval > minobjectSpawnInterval)
+            {
+                objectSpawnInterval -= spawnIntervalStep;
+                Debug.Log($"장애물 스폰 주기 감소: {objectSpawnInterval}");
+            }
+
+            // 버프 스폰 주기 감소
+            if (buffSpawnInterval > minbuffSpawnInterval)
+            {
+                buffSpawnInterval -= buffspawnIntervalStep;
+                Debug.Log($"버프 스폰 주기 감소: {buffSpawnInterval}");
+            }
+        }
+    }
     public void IncreaseScore(int amount)
     {
         Score += amount;
@@ -152,6 +202,79 @@ public class GameManager : MonoBehaviour
             bestScoreTextMesh.text = $"Best Score: {BestScore:D5}"; // 최고 점수를 5자리로 표시
         }
     }
+
+    private void ResetObjectSpawns()
+    {
+        // 기존 코루틴이 실행 중이면 중지
+        if (objectSpawnCoroutine != null)
+        {
+            StopCoroutine(objectSpawnCoroutine);
+        }
+        // 새로운 코루틴 시작
+        objectSpawnCoroutine = StartCoroutine(SpawnObjectsCoroutine());
+        isObjectSpawnCoroutineRunning = true;
+        Debug.Log($"현재 장애물 생성 주기: {objectSpawnInterval}");
+    }
+
+    private void ResetBuffSpawns()
+    {
+        // 기존 코루틴이 실행 중이면 중지
+        if (buffSpawnCoroutine != null)
+        {
+            StopCoroutine(buffSpawnCoroutine);
+        }
+
+        // 새로운 코루틴 시작
+        buffSpawnCoroutine = StartCoroutine(SpawnBuffsCoroutine());
+        isBuffSpawnCoroutineRunning = true;
+        Debug.Log($"현재 버프 생성 주기: {buffSpawnInterval}");
+    }
+    // 장애물 오브젝트 생성 코루틴
+private IEnumerator SpawnObjectsCoroutineWithInterval(float spawnInterval)
+    {
+        while (!gameStopped)
+        {
+            yield return new WaitForSeconds(spawnInterval);
+            // 장애물 생성 로직
+            SpawnUpwardObject();
+            SpawnDownwardObject();
+        }
+    }
+
+    // 버프 오브젝트 생성 코루틴
+    private IEnumerator SpawnBuffsCoroutineWithInterval(float spawnInterval)
+    {
+        while (!gameStopped)
+        {
+            yield return new WaitForSeconds(spawnInterval);
+            // 버프 생성 로직
+            SpawnUpwardBuff();
+            SpawnDownwardBuff();
+        }
+    }
+
+    // 버프 오브젝트 생성 코루틴
+    private IEnumerator SpawnUpwardBuffCoroutine()
+    {
+        while (!gameStopped)
+        {
+            // 일정 시간 간격 후 생성
+            yield return new WaitForSeconds(buffSpawnInterval);
+            // 버프 생성 로직
+            SpawnUpwardBuff();
+        }
+    }
+
+    private IEnumerator SpawnDownwardBuffCoroutine()
+    {
+        while (!gameStopped)
+        {
+            // 일정 시간 간격 후 생성
+            yield return new WaitForSeconds(buffSpawnInterval);
+            // 버프 생성 로직
+            SpawnDownwardBuff();
+        }
+    }
     void Update()
     {
         // 게임 정지 후 플레이어 좌우반전 방지
@@ -167,7 +290,7 @@ public class GameManager : MonoBehaviour
         if (gameStopped) return;
 
         timeElapsed += Time.deltaTime;
-        timeElapsedobject+= Time.deltaTime;
+        
 
         // 1분마다 스테이지 전환
         if (timeElapsed >= 60f) 
@@ -186,55 +309,12 @@ public class GameManager : MonoBehaviour
 
         }
 
-        //1초마다 오브젝트 생성 간격 변경
-        if (timeElapsedobject >= 1f)
-        {
-            timeElapsedobject = 0f;
-            // 오브젝트 생성 간격 감소
-            if (objectSpawnInterval > minobjectSpawnInterval) //최소값 제한
-            { objectSpawnInterval -=spawnIntervalStep;
-                Debug.Log("장애물 생성 간격 감소");
-                // 오브젝트 생성 호출 재설정
-                ResetObjectSpawns();
-            }
-            //버프 오브젝트 생성 간격 감소 
-            if (buffSpawnInterval > minbuffSpawnInterval)//최소값 제한
-            { buffSpawnInterval -= buffspawnIntervalStep;
-                Debug.Log("버프 오브젝트 생성 간격 감소");
-                // 오브젝트 생성 호출 재설정
-                ResetObjectSpawns();
-            }
-
-           
-        }
-
         if (Input.GetKeyDown(KeyCode.F1)) //테스트용 최고점수 초기화 코드
         {
             BestScore = 0; // F1을 누르면 BestScore를 초기화
             Debug.Log("최고점수가 초기화 되었습니다");
             bestScoreTextMesh.text = $"Best Score: {BestScore:D5}";
         }
-
-      
-        if (Input.GetKeyDown(KeyCode.F1)) //테스트용 최고점수 초기화 코드
-        {
-            BestScore = 0; // F1을 누르면 BestScore를 초기화
-            Debug.Log("최고점수가 초기화 되었습니다");
-            bestScoreTextMesh.text = $"Best Score: {BestScore:D5}";
-        }
-    }
-
-    private void ResetObjectSpawns()
-    { //장애물 오브젝트
-        CancelInvoke(nameof(SpawnUpwardObject));
-        CancelInvoke(nameof(SpawnDownwardObject));
-        InvokeRepeating(nameof(SpawnUpwardObject), 0f, objectSpawnInterval);
-        InvokeRepeating(nameof(SpawnDownwardObject), 0f, objectSpawnInterval);
-        //버프 오브젝트
-        CancelInvoke(nameof(SpawnUpwardBuff));
-        CancelInvoke(nameof(SpawnDownwardBuff));
-        InvokeRepeating(nameof(SpawnUpwardBuff), 0f, buffSpawnInterval);
-        InvokeRepeating(nameof(SpawnDownwardBuff), 0f, buffSpawnInterval);
     }
 
     // 오브젝트 스폰 관련 함수
@@ -459,7 +539,7 @@ public class ObjectMover : MonoBehaviour
                 return;
             }
 
-            // 게임 오버 처리
+         /*   // 게임 오버 처리
             if (collision.gameObject == playerController.playerA)
             {
                 Debug.Log("Player A가 죽었습니다. 게임 오버!");
@@ -475,7 +555,7 @@ public class ObjectMover : MonoBehaviour
             Debug.Log("충돌로 게임 오버!");
             playerController.playerASpeed = 0;
             playerController.playerBSpeed = 0;
-
+*/
         }
 
         // Ground와 충돌 처리
@@ -595,7 +675,6 @@ public class BuffMover : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Ground"))
         {
-            Debug.Log("버프아이템 제거");
             Destroy(gameObject); //바닥에 충돌하면 제거
         }
     }
