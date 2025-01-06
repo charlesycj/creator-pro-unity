@@ -3892,12 +3892,12 @@ MonoBehaviour:
   bestScoreTextMesh: {fileID: 280660040}
   playerAnimatorA: {fileID: 69246877}
   playerAnimatorB: {fileID: 535716418}
-  objectSpawnInterval: 1
+  objectSpawnInterval: 4
   minobjectSpawnInterval: 0.4
   spawnIntervalStep: 0.1
-  buffSpawnInterval: 1
-  minbuffSpawnInterval: 0.4
-  buffspawnIntervalStep: 0.1
+  buffSpawnInterval: 6
+  minbuffSpawnInterval: 3
+  buffspawnIntervalStep: 0.05
   gravityScale: 20
   gameStopped: 0
   currentStage: 1
