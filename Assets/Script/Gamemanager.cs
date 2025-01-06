@@ -72,6 +72,12 @@ public class GameManager : MonoBehaviour
         UpdateScoreText(); // 초기 점수 갱신
         UpdateBestScoreText(); // 최고 점수 텍스트 초기화
 
+
+        InvokeRepeating(nameof(SpawnUpwardObject), 0f, objectSpawnInterval);
+        InvokeRepeating(nameof(SpawnDownwardObject), 0f, objectSpawnInterval);
+        InvokeRepeating(nameof(SpawnUpwardBuff), 0f, buffSpawnInterval);
+        InvokeRepeating(nameof(SpawnDownwardBuff), 0f, buffSpawnInterval);
+
         //스코어 텍스트 설정
         if (scorePrefab != null)
         {
@@ -99,8 +105,6 @@ public class GameManager : MonoBehaviour
             Debug.LogError("SoundManager를 찾을 수 없습니다!");
         }
     }
-
-
     public void IncreaseScore(int amount)
     {
         Score += amount;
@@ -198,7 +202,6 @@ public class GameManager : MonoBehaviour
                 // 오브젝트 생성 호출 재설정
                 ResetbuffSpawns();
             }
-            
         }
 
         if (Input.GetKeyDown(KeyCode.F1)) //테스트용 최고점수 초기화 코드
@@ -208,41 +211,21 @@ public class GameManager : MonoBehaviour
             bestScoreTextMesh.text = $"Best Score: {BestScore:D5}";
         }
     }
-
     private void ResetObjectSpawns()
     {
             Debug.Log($"장애물 생성 간격  {objectSpawnInterval}");
             CancelInvoke(nameof(SpawnUpwardObject));
             CancelInvoke(nameof(SpawnDownwardObject));
-        if (objectSpawnInterval > minobjectSpawnInterval)
-        {
             InvokeRepeating(nameof(SpawnUpwardObject), 0f, objectSpawnInterval);
             InvokeRepeating(nameof(SpawnDownwardObject), 0f, objectSpawnInterval);
-            Debug.Log("장애물 생성 재시작");
-        }
-        else
-        {
-            Debug.LogWarning("objectSpawnInterval이 최소값 이하입니다. " +
-                "InvokeRepeating 실행되지 않음.");
-        }
-
     }
     private void ResetbuffSpawns()
     {
             Debug.Log($"버프아이템 생성 간격  {buffSpawnInterval}");
             CancelInvoke(nameof(SpawnUpwardBuff));
             CancelInvoke(nameof(SpawnDownwardBuff));
-
-        if (buffSpawnInterval > minbuffSpawnInterval)
-        {
             InvokeRepeating(nameof(SpawnUpwardBuff), 0f, buffSpawnInterval);
             InvokeRepeating(nameof(SpawnDownwardBuff), 0f, buffSpawnInterval);
-        }
-        else
-        {
-            Debug.LogWarning("buffSpawnInterval이 최소값 이하입니다." +
-                " InvokeRepeating 실행되지 않음.");
-        }
     }
     // 오브젝트 스폰 관련 함수
     public void SpawnUpwardObject()
