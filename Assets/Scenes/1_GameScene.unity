@@ -3871,17 +3871,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4deb374a0e334d4985f0b83730e143f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stage1UpwardPrefabs:
+  stage1Prefabs:
   - {fileID: 3115433129403260210, guid: 6892cb6b6697a964cb0f267b4d904742, type: 3}
-  stage1DownwardPrefabs:
-  - {fileID: 3115433129403260210, guid: 6892cb6b6697a964cb0f267b4d904742, type: 3}
-  stage2UpwardPrefabs:
+  stage2Prefabs:
   - {fileID: 3353881796919784866, guid: f5ecf9defaba6e7429c1d40171168071, type: 3}
-  stage2DownwardPrefabs:
-  - {fileID: 3353881796919784866, guid: f5ecf9defaba6e7429c1d40171168071, type: 3}
-  stage3UpwardPrefabs:
-  - {fileID: 1388822170110494221, guid: c5c39a51d85471b4c846f610d4e32c21, type: 3}
-  stage3DownwardPrefabs:
+  stage3Prefabs:
   - {fileID: 1388822170110494221, guid: c5c39a51d85471b4c846f610d4e32c21, type: 3}
   SpeedBuffPrefab: {fileID: 7105082956661526811, guid: 6e38ad166ab73974e981100be35ad4aa, type: 3}
   ShieldBuffPrefab: {fileID: 1319792513950287898, guid: 0bcf4dbfebe61314f854e18f257b35d1, type: 3}
@@ -3892,13 +3886,14 @@ MonoBehaviour:
   bestScoreTextMesh: {fileID: 280660040}
   playerAnimatorA: {fileID: 69246877}
   playerAnimatorB: {fileID: 535716418}
-  objectSpawnInterval: 4
-  minobjectSpawnInterval: 0.4
+  objectSpawnInterval: 3
+  minobjectSpawnInterval: 0.2
   spawnIntervalStep: 0.1
-  buffSpawnInterval: 2
-  minbuffSpawnInterval: 1
+  buffSpawnInterval: 4
+  minbuffSpawnInterval: 2.5
   buffspawnIntervalStep: 0.05
-  gravityScale: 15
+  gravityScale: 20
+  soundManager: {fileID: 287309664}
   gameStopped: 0
   currentStage: 1
   Score: 0

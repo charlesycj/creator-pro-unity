@@ -5,16 +5,15 @@ using TMPro;
 using JetBrains.Annotations;
 using System;
 using Random = UnityEngine.Random;
+using System.Collections.Generic;
+using UnityEngine.Audio;
 
 public class GameManager : MonoBehaviour
 {
     //떨어지는 장애물 관리
-    [SerializeField] private GameObject[] stage1UpwardPrefabs;
-    [SerializeField] private GameObject[] stage1DownwardPrefabs;
-    [SerializeField] private GameObject[] stage2UpwardPrefabs;
-    [SerializeField] private GameObject[] stage2DownwardPrefabs;
-    [SerializeField] private GameObject[] stage3UpwardPrefabs;
-    [SerializeField] private GameObject[] stage3DownwardPrefabs;
+    [SerializeField] private GameObject[] stage1Prefabs;
+    [SerializeField] private GameObject[] stage2Prefabs;
+    [SerializeField] private GameObject[] stage3Prefabs;
 
     //떨어지는 버프 관리
     [SerializeField] private GameObject SpeedBuffPrefab; //스피드
@@ -39,6 +38,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private float gravityScale = 20f; //중력값
 
+ 
+
+    public SoundManager soundManager;
     private float timeElapsed = 0f;
     private float timeElapsedobject = 0f;
     public bool gameStopped = false;
@@ -61,6 +63,8 @@ public class GameManager : MonoBehaviour
     public Action<int> onBestScoreAchieved;
 
     public BuffMover buffMover;
+
+  
 
     void Start()
     {
@@ -92,7 +96,6 @@ public class GameManager : MonoBehaviour
                 scoreTextMesh2.text = $"Score: {Score:D5}"; // 두 번째 점수 UI 초기화
             }
         }
-
         // SoundManager 인스턴스 가져오기
         SoundManager soundManager = FindObjectOfType<SoundManager>();
         if (soundManager != null)
@@ -101,7 +104,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
+    //점수 증가
     public void IncreaseScore(int amount)
     {
         Score += amount;
@@ -122,13 +125,14 @@ public class GameManager : MonoBehaviour
         UpdateScoreText();
     }
 
-
     private void UpdateScoreText()
     {
-    
-        scoreTextMesh1.text = $"Score: {Score:D5}"; // 5자리로 점수 표시
-        scoreTextMesh2.text = $"Score: {Score:D5}"; // 5자리로 점수 표시
-        bestScoreTextMesh.text = $"Best Score: {BestScore:D5}"; // 최고 점수를 5자리로 표시
+        // 5자리로 점수 표시
+        scoreTextMesh1.text = $"Score: {Score:D5}"; 
+        scoreTextMesh2.text = $"Score: {Score:D5}";
+
+        // 최고 점수를 5자리로 표시
+        bestScoreTextMesh.text = $"Best Score: {BestScore:D5}";
     }
 
     void Update()
@@ -151,20 +155,18 @@ public class GameManager : MonoBehaviour
         // 1분마다 스테이지 전환
         if (timeElapsed >= 60f)
         {
-            SoundManager soundManager = FindObjectOfType<SoundManager>(); // SoundManager 찾기
-            soundManager.playLevelTransition(); //사운드 재생
-            gravityScale += 3f;
-            timeElapsed = 0f;
+            
+            gravityScale += 5f;
+            timeElapsed = 0f; 
             currentStage = currentStage == 3 ? 1 : currentStage + 1;
-
-            // 스테이지에 맞는 BGM 재생
+            soundManager.playLevelTransition();
             soundManager.PlayStageBGM(currentStage);
 
-            // 오브젝트 생성 호출 재설정
+            // 오브젝트 생성 재설정
             ResetObjectSpawns();
         }
 
-        // 1초마다 오브젝트 생성 간격 변경
+        // 5초마다 오브젝트 생성 간격 변경
         if (timeElapsedobject >= 5f)
         {
             timeElapsedobject = 0f;
@@ -173,7 +175,7 @@ public class GameManager : MonoBehaviour
             if (objectSpawnInterval > minobjectSpawnInterval)
             {
                 objectSpawnInterval -= spawnIntervalStep;
-                objectSpawnInterval = Mathf.Max(objectSpawnInterval, minobjectSpawnInterval); // 최소값 유지
+                objectSpawnInterval = Mathf.Round(objectSpawnInterval * 1000f) / 1000f; // 소수점 셋째 자리까지 반올림
                 ResetObjectSpawns();
             }
 
@@ -181,7 +183,7 @@ public class GameManager : MonoBehaviour
             if (buffSpawnInterval > minbuffSpawnInterval)
             {
                 buffSpawnInterval -= buffspawnIntervalStep;
-                buffSpawnInterval = Mathf.Max(buffSpawnInterval, minbuffSpawnInterval); // 최소값 유지
+                buffSpawnInterval = Mathf.Round(buffSpawnInterval * 1000f) / 1000f; // 소수점 셋째 자리까지 반올림
                 ResetbuffSpawns();
             }
         }
@@ -222,38 +224,45 @@ public class GameManager : MonoBehaviour
         }
 
         InvokeRepeating(nameof(RunSpawnsBuff), 0f, buffSpawnInterval);
-
         Debug.Log("버프아이템 생성 재시작");
     }
 
-    // 오브젝트 스폰 관련 함수
     public void RunSpawnsObject()
     {
         if (gameStopped) return;
-        SpawnObject(GetStagePrefab(currentStage, true), new Vector3(Random.Range(-850f, 850f), -425f, 0f), -gravityScale);
-        SpawnObject(GetStagePrefab(currentStage, false), new Vector3(Random.Range(-850f, 850f), 425f, 0f), gravityScale);
+
+        // 위쪽과 아래쪽 위치에서 각각 프리팹 생성
+        SpawnObject(GetStagePrefab(currentStage), new Vector3(Random.Range(-850f, 850f), -425f, 0f), -gravityScale); // 위쪽
+        SpawnObject(GetStagePrefab(currentStage), new Vector3(Random.Range(-850f, 850f), 425f, 0f), gravityScale);   // 아래쪽
     }
 
-    // 버프 스폰 관련 함수
-    public void RunSpawnsBuff() //올라 는 버프 무작위좌표에 생성
+
+    public void RunSpawnsBuff() //버프 무작위좌표에 생성
     {
         if (gameStopped) return;
         SpawnBuff(GetRandomBuffPrefab(), new Vector3(Random.Range(-850f, 850f), -425f, 0f), -gravityScale);
         SpawnBuff(GetRandomBuffPrefab(), new Vector3(Random.Range(-850f, 850f), 425f, 0f), gravityScale);
     }
 
-    private GameObject GetStagePrefab(int stage, bool isUpward)
+    //스테이지 결정
+    private GameObject GetStagePrefab(int stage)
     {
+        // 스테이지 프리팹 배열 선택
         GameObject[] prefabArray = stage switch
         {
-            1 => isUpward ? stage1UpwardPrefabs : stage1DownwardPrefabs,
-            2 => isUpward ? stage2UpwardPrefabs : stage2DownwardPrefabs,
-            3 => isUpward ? stage3UpwardPrefabs : stage3DownwardPrefabs,
-            _ => isUpward ? stage1UpwardPrefabs : stage1DownwardPrefabs
+            1 => stage1Prefabs,
+            2 => stage2Prefabs,
+            3 => stage3Prefabs,
+            _ => stage1Prefabs // 기본값: 스테이지 1 프리팹 배열
         };
 
+        if (prefabArray == null || prefabArray.Length == 0)
+            return null; // 프리팹 배열이 비어있으면 null 반환
+
+        // 배열에서 무작위로 프리팹 선택
         return prefabArray[Random.Range(0, prefabArray.Length)];
     }
+
 
     private GameObject GetRandomBuffPrefab() //버프아이템 무작위결정
     {
@@ -267,9 +276,11 @@ public class GameManager : MonoBehaviour
         };
     }
 
-    // 공통 스폰 함수
-    private void SpawnObject(GameObject prefab, Vector3 position, float gravity)
+    //공통스폰 함수
+    private T Spawn<T>(GameObject prefab, Vector3 position, float gravity) where T : MonoBehaviour
     {
+        if (prefab == null) return null;
+
         GameObject newObject = Instantiate(prefab, position, Quaternion.identity);
         var rb = newObject.AddComponent<Rigidbody2D>();
         rb.gravityScale = gravity;
@@ -278,29 +289,27 @@ public class GameManager : MonoBehaviour
         if (newObject.GetComponent<Collider2D>() == null)
             newObject.AddComponent<BoxCollider2D>();
 
-        var moverScript = newObject.AddComponent<ObjectMover>();
-        moverScript.spawnerScript = this;
+        var moverScript = newObject.AddComponent<T>();
+        if (moverScript is ObjectMover objectMover)
+        {
+            objectMover.spawnerScript = this;
+        }
+
+        return moverScript;
     }
+        private void SpawnObject(GameObject prefab, Vector3 position, float gravity)
+         {
+        Spawn<ObjectMover>(prefab, position, gravity);
+        }
 
-    private void SpawnBuff(GameObject prefab, Vector3 position, float gravity)
-    {
-        if (prefab == null) return;
-
-        GameObject newObject = Instantiate(prefab, position, Quaternion.identity);
-        var rb = newObject.AddComponent<Rigidbody2D>();
-        rb.gravityScale = gravity;
-        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-
-        var moverScript = newObject.AddComponent<BuffMover>();
-        moverScript.spawnerScript = this;
-        buffMover = moverScript;
-    }
+         private void SpawnBuff(GameObject prefab, Vector3 position, float gravity)
+         {
+        buffMover = Spawn<BuffMover>(prefab, position, gravity);
+         }
 
     public void StopGame() //게임정지시 오브젝트 생성 정지
     {
-
-        SoundManager soundManager = FindObjectOfType<SoundManager>(); // SoundManager 찾기
-        soundManager.PlayGameOverSound(); // 속도 버프 사운드 재생
+        soundManager.PlayGameOverSound(); // 게임오버 사운드 재생
         gameStopped = true; // 게임 정지 상태 플래그 설정
         CancelInvoke(nameof(RunSpawnsObject));
         CancelInvoke(nameof(RunSpawnsBuff));
@@ -312,21 +321,9 @@ public class GameManager : MonoBehaviour
             playerAnimatorB.SetTrigger("dead");
         }
 
-        // 현재 점수가 최고 점수보다 높으면 갱신
-        if (Score > BestScore)
-        {
-            BestScore = Score;
-            Debug.Log($"최고 점수가 갱신되었습니다: {BestScore}");
-
-            // 최고 점수 저장
-            PlayerPrefs.SetInt("Score", BestScore);
-            PlayerPrefs.Save(); // 변경 사항을 저장
-        }
-
         // 화면에 있는 모든 장애물 및 버프 제거
         ClearAllObstaclesAndBuffs();
-        // 최고 점수 텍스트 갱신
-        UpdateScoreText();
+
 
         // Canvas-GameOver 활성화
         if (gameOverCanvas != null)
@@ -373,8 +370,7 @@ public class GameManager : MonoBehaviour
     // 장애물 및 버프 제거 함수
     private void ClearAllObstaclesAndBuffs()
     {
-        // 모든 태그를 배열로 정의
-        string[] buffTags = { "SpeedBuff", "ShieldBuff", "HideBuff" };
+       
         // 장애물 제거
         GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Avoid");
         foreach (GameObject obstacle in obstacles)
@@ -382,7 +378,10 @@ public class GameManager : MonoBehaviour
             Destroy(obstacle);
 
         }
-         //버프 제거
+
+        // 버프를 배열로 정의
+        string[] buffTags = { "SpeedBuff", "ShieldBuff", "HideBuff" };
+        //버프 제거
         foreach (string tag in buffTags)
         {
             GameObject[] buffs = GameObject.FindGameObjectsWithTag(tag);
