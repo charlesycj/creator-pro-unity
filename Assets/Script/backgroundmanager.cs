@@ -4,7 +4,7 @@ using UnityEngine;
 public class BackgroundManager : MonoBehaviour
 {
     public GameObject[] backgrounds; // 3개의 배경 오브젝트를 배열로 관리
-    public float changeInterval = 60f; // 배경 변경 주기 (90초)
+    public float changeInterval = 60f; // 배경 변경 주기 (60초)
 
     private int currentState = 0; // 현재 배경 상태 (0: 첫 번째, 1: 두 번째, 2: 세 번째)
 

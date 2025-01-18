@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class PlayerManager : MonoBehaviour
 
     //1회용 쉴드 활성화 상태 추적
     private bool playerAIsShieldActive, playerBIsShieldActive;
+
+ 
 
     [Header("Ground Settings")]
     public GameObject ground; // Ground 오브젝트
@@ -254,6 +257,92 @@ public class PlayerManager : MonoBehaviour
         Coroutine newCoroutine = StartCoroutine(coroutineMethod);
         coroutineDict[isPlayerA] = newCoroutine;
         return newCoroutine;
+    }
+
+    // 스피드업 버프 적용
+    public IEnumerator ApplySpeedBuff(PlayerManager playerController, bool isPlayerA)
+    {
+        // 기존 속도 초기화
+        if (isPlayerA)
+            playerController.playerASpeed = 400;
+        else
+            playerController.playerBSpeed = 400;
+        // Animator 가져오기
+        GameObject player = isPlayerA ? playerController.playerA : playerController.playerB;
+        Animator playerAnimator = player.GetComponent<Animator>();
+
+        if (playerAnimator == null)
+        {
+            Debug.LogError("Animator를 찾을 수 없습니다. 플레이어에 Animator가 추가되어 있는지 확인하세요.");
+            yield break;
+        }
+        // 애니메이션 속도 2배로 증가
+        playerAnimator.speed = 2.5f;
+
+        // 버프 적용
+        if (isPlayerA)
+            playerController.playerASpeed +=200 ;
+        else
+            playerController.playerBSpeed +=200;
+
+        yield return new WaitForSeconds(2f); // 첫 2초 동안 고정된 증가 유지
+
+        // 남은 2초 동안 0.5초 간격으로 속도를 줄임
+        int decrementAmount = 50; // 0.5초마다 줄어드는 양
+        int steps = 4; // 2초 동안 0.5초 간격 == 속도가 감소하는 횟수
+        for (int i = 0; i < steps; i++)
+        {
+            if (isPlayerA)
+            {
+                playerController.playerASpeed -= decrementAmount;
+                Debug.Log($"A의 속도 50감소 현재속도: {playerASpeed}");
+            }
+
+            else
+            {
+                playerController.playerBSpeed -= decrementAmount;
+                Debug.Log($"B의 속도 50감소 현재속도:{playerBSpeed}");
+            }
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        // 애니메이션 속도 복원
+        playerAnimator.speed = 1f;
+
+        Debug.Log("스피드업 버프 해제");
+    }
+
+    // 은신 버프 적용
+     public IEnumerator ApplyHideBuff(float duration, bool isPlayerA)
+    {
+        GameObject playerManager = GameObject.Find("PlayerManager");
+        PlayerManager playerController = playerManager.GetComponent<PlayerManager>();
+
+        // 은신 상태 활성화
+        playerController.SetPlayerHide(true, isPlayerA, duration);
+
+        float remainingTime = duration;
+
+        //남은 은신시간 측정s
+        while (remainingTime > 0)
+        {
+            if (isPlayerA)
+            {
+                Debug.Log($"A캐릭터의 은신 효과 남은 시간: {remainingTime:F2}초");
+                yield return new WaitForSeconds(0.5f); // 0.5초 간격으로 업데이트
+                remainingTime -= 0.5f;
+            }
+            else if (!isPlayerA)
+            {
+                Debug.Log($"B캐릭터의 은신 효과 남은 시간: {remainingTime:F2}초");
+                yield return new WaitForSeconds(0.5f); // 0.5초 간격으로 업데이트
+                remainingTime -= 0.5f;
+            }
+        }
+
+        // 은신 상태 비활성화
+        playerController.SetPlayerHide(false, isPlayerA, duration);
     }
 }
   
