@@ -135,16 +135,6 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // 게임 정지 후 플레이어 좌우반전 방지
-        if (gameStopped)
-        {
-            if (playerAnimatorA != null)
-                FixPlayerFlip(playerAnimatorA.gameObject);
-
-            if (playerAnimatorB != null)
-                FixPlayerFlip(playerAnimatorB.gameObject);
-        }
-
         if (gameStopped) return;
 
         timeElapsed += Time.deltaTime;
@@ -346,22 +336,6 @@ public class GameManager : MonoBehaviour
                         DeadPlayerB.SetActive(true);
                     }
             }
-        }
-    }
-
-    // 플레이어 사망시 좌우반전 방지 함수
-    private void FixPlayerFlip(GameObject player)
-    {
-        if (player != null)
-        {
-            var spriteRenderer = player.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-                spriteRenderer.flipX = false;
-
-            // localScale.x를 양수로 강제
-            Vector3 fixedScale = player.transform.localScale;
-            fixedScale.x = Mathf.Abs(fixedScale.x);
-            player.transform.localScale = fixedScale;
         }
     }
 
