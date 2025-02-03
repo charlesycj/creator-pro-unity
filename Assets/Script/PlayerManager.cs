@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor.U2D.Aseprite;
 using UnityEngine;
+using UnityEngine.UIElements;
+
 public class PlayerManager : MonoBehaviour
 {
 
-    public Dictionary<bool, Coroutine> activeSpeedBuffCoroutines = new Dictionary<bool, Coroutine>();
-    public Dictionary<bool, Coroutine> activeHideBuffCoroutines = new Dictionary<bool, Coroutine>();
+    private Dictionary<bool, Coroutine> speedBuffCoroutines = new Dictionary<bool, Coroutine>();
+    private Dictionary<bool, Coroutine> hideBuffCoroutines = new Dictionary<bool, Coroutine>();
 
     [Header("Player A Settings")]
     public GameObject playerA; // Player A 오브젝트
@@ -79,7 +81,6 @@ public class PlayerManager : MonoBehaviour
             // 플레이어 A와 B의 이동을 처리
             HandlePlayerMovement(playerA, rigidA, rendererA, playerASpeed, playerALeftKey, playerARightKey);
             HandlePlayerMovement(playerB, rigidB, rendererB, playerBSpeed, playerBLeftKey, playerBRightKey);
-
         }
     }
 
@@ -117,7 +118,6 @@ public class PlayerManager : MonoBehaviour
             playerAnim.SetBool("isRunning", true);
         }
     }
-
 
     public bool IsPlayerHide(bool isPlayerA)
     {
@@ -246,17 +246,32 @@ public class PlayerManager : MonoBehaviour
     }
 
 
-    public Coroutine StartManagedCoroutine(Dictionary<bool, Coroutine> coroutineDict, bool isPlayerA, IEnumerator coroutineMethod)
+    // 속도 버프 전용 코루틴 관리
+    public void StartSpeedCoroutine(IEnumerator coroutineMethod, bool isPlayerA)
     {
-        // 기존 코루틴 중지
-        if (coroutineDict.ContainsKey(isPlayerA) && coroutineDict[isPlayerA] != null)
+        // 기존 속도 버프 코루틴 중지
+        if (speedBuffCoroutines.ContainsKey(isPlayerA) && speedBuffCoroutines[isPlayerA] != null)
         {
-            StopCoroutine(coroutineDict[isPlayerA]);
+            StopCoroutine(speedBuffCoroutines[isPlayerA]);
         }
-        // 새 코루틴 시작
+
+        // 새 코루틴 실행
         Coroutine newCoroutine = StartCoroutine(coroutineMethod);
-        coroutineDict[isPlayerA] = newCoroutine;
-        return newCoroutine;
+        speedBuffCoroutines[isPlayerA] = newCoroutine;
+    }
+
+    // 은신 버프 전용 코루틴 관리
+    public void StartHideCoroutine(IEnumerator coroutineMethod, bool isPlayerA)
+    {
+        // 기존 은신 버프 코루틴 중지
+        if (hideBuffCoroutines.ContainsKey(isPlayerA) && hideBuffCoroutines[isPlayerA] != null)
+        {
+            StopCoroutine(hideBuffCoroutines[isPlayerA]);
+        }
+
+        // 새 코루틴 실행
+        Coroutine newCoroutine = StartCoroutine(coroutineMethod);
+        hideBuffCoroutines[isPlayerA] = newCoroutine;
     }
 
     // 스피드업 버프 적용
@@ -312,9 +327,64 @@ public class PlayerManager : MonoBehaviour
 
         Debug.Log("스피드업 버프 해제");
     }
+    // 스피드다운 디버프 적용
+    public IEnumerator ApplySpeedDeBuff(PlayerManager playerController, bool isPlayerA)
+    {
+        
+        // 기존 속도 초기화
+        if (isPlayerA)
+            playerController.playerASpeed = 400;
+        else
+            playerController.playerBSpeed = 400;
+
+        // Animator 가져오기
+        GameObject player = isPlayerA ? playerController.playerA : playerController.playerB;
+        Animator playerAnimator = player.GetComponent<Animator>();
+
+        if (playerAnimator == null)
+        {
+            Debug.LogError("Animator를 찾을 수 없습니다. 플레이어에 Animator가 추가되어 있는지 확인하세요.");
+            yield break;
+        }
+
+        // 애니메이션 속도 감소
+        playerAnimator.speed = 0.5f;
+
+        // 버프 적용 (속도 200 감소)
+        if (isPlayerA)
+            playerController.playerASpeed -= 200;
+        else
+            playerController.playerBSpeed -= 200;
+
+        yield return new WaitForSeconds(2f); // 첫 2초 동안 고정된 감소 유지
+
+        // 이후 0.5초마다 속도를 증가시켜서 400으로 복귀
+        int incrementAmount = 50; // 0.5초마다 증가하는 양
+        int steps = 4; // 2초 동안 0.5초 간격 == 속도가 증가하는 횟수
+        for (int i = 0; i < steps; i++)
+        {
+            if (isPlayerA)
+            {
+                playerController.playerASpeed += incrementAmount;
+                Debug.Log($"A의 속도 50 증가 현재속도: {playerController.playerASpeed}");
+            }
+            else
+            {
+                playerController.playerBSpeed += incrementAmount;
+                Debug.Log($"B의 속도 50 증가 현재속도: {playerController.playerBSpeed}");
+            }
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        // 애니메이션 속도 복원
+        playerAnimator.speed = 1f;
+
+        Debug.Log("스피드 다운 버프 해제");
+    }
 
     // 은신 버프 적용
-     public IEnumerator ApplyHideBuff(float duration, bool isPlayerA)
+    public IEnumerator ApplyHideBuff(float duration, bool isPlayerA)
     {
         GameObject playerManager = GameObject.Find("PlayerManager");
         PlayerManager playerController = playerManager.GetComponent<PlayerManager>();

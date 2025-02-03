@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject ShieldBuffPrefab; //보호막
     [SerializeField] private GameObject HideBuffPrefab; // 3초무적
 
+    [SerializeField] private GameObject SpeedDebuffPrefab; //스피드감소
+    [SerializeField] private GameObject reverseDebuffPrefab; //스피드감소
+    
     [SerializeField] public GameObject scorePrefab; // Score 프리팹 참조
     [SerializeField] private TextMeshProUGUI scoreTextMesh1; //현재 점수 텍스트
     [SerializeField] private TextMeshProUGUI scoreTextMesh2; //현재 점수 텍스트
@@ -36,6 +39,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] public float minbuffSpawnInterval = 3f; // 최소 버프 생성 간격
     [SerializeField] public float buffspawnIntervalStep = 0.05f; //버프 스폰주기 감소값
 
+    [SerializeField] public float DebuffSpawnInterval = 6f;   // 버프 생성 간격 
+    [SerializeField] public float minDebuffSpawnInterval = 3f; // 최소 버프 생성 간격
+    [SerializeField] public float DebuffspawnIntervalStep = 0.05f; //버프 스폰주기 감소값
+
     [SerializeField] private float gravityScale = 20f; //중력값
 
     public SoundManager soundManager;
@@ -45,7 +52,6 @@ public class GameManager : MonoBehaviour
 
     public int currentStage = 1;
     private GameObject scoreObject;
-
 
     public int Score = 0; //현재 점수
     public int BestScore; //최고점수 
@@ -61,14 +67,14 @@ public class GameManager : MonoBehaviour
     public Action<int> onBestScoreAchieved;
 
     public BuffMover buffMover;
+    public DeBuffMover debuffMover;
 
-  
 
     void Start()
     {
         ResetObjectSpawns();
         ResetbuffSpawns();
-
+        ResetDebuffSpawns();
         onStageEntered?.Invoke(currentStage);
 
         // 최고 점수 불러오기
@@ -143,7 +149,6 @@ public class GameManager : MonoBehaviour
         // 1분마다 스테이지 전환
         if (timeElapsed >= 60f)
         {
-            
             gravityScale += 5f;
             timeElapsed = 0f; 
             currentStage = currentStage == 3 ? 1 : currentStage + 1;
@@ -174,6 +179,13 @@ public class GameManager : MonoBehaviour
                 buffSpawnInterval = Mathf.Round(buffSpawnInterval * 1000f) / 1000f; // 소수점 셋째 자리까지 반올림
                 ResetbuffSpawns();
             }
+            // 디버프 생성 간격 감소
+            if (DebuffSpawnInterval > minDebuffSpawnInterval)
+            {
+                DebuffSpawnInterval -= DebuffspawnIntervalStep;
+                DebuffSpawnInterval = Mathf.Round(DebuffSpawnInterval * 1000f) / 1000f; // 소수점 셋째 자리까지 반올림
+                ResetDebuffSpawns();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.F1)) // 테스트용 최고점수 초기화 코드
@@ -187,7 +199,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetObjectSpawns()
     {
-        Debug.Log($"장애물 생성 간격: {objectSpawnInterval}");
+       
         CancelInvoke(nameof(RunSpawnsObject));
       
         // 최소값 이하로 떨어지더라도 최소값으로 설정하여 InvokeRepeating 실행
@@ -197,12 +209,12 @@ public class GameManager : MonoBehaviour
         }
 
         InvokeRepeating(nameof(RunSpawnsObject), 0f, objectSpawnInterval);
-        Debug.Log("장애물 생성 재시작");
+        
     }
 
     private void ResetbuffSpawns()
     {
-        Debug.Log($"버프아이템 생성 간격: {buffSpawnInterval}");
+       
         CancelInvoke(nameof(RunSpawnsBuff));
 
         // 최소값 이하로 떨어지더라도 최소값으로 설정하여 InvokeRepeating 실행
@@ -212,7 +224,20 @@ public class GameManager : MonoBehaviour
         }
 
         InvokeRepeating(nameof(RunSpawnsBuff), 0f, buffSpawnInterval);
-        Debug.Log("버프아이템 생성 재시작");
+       
+    }
+    private void ResetDebuffSpawns()
+    {
+       
+        CancelInvoke(nameof(RunSpawnsDeBuff));
+
+        // 최소값 이하로 떨어지더라도 최소값으로 설정하여 InvokeRepeating 실행
+        if (DebuffSpawnInterval < minDebuffSpawnInterval)
+        {
+            DebuffSpawnInterval = minDebuffSpawnInterval;
+        }
+
+        InvokeRepeating(nameof(RunSpawnsDeBuff), 0f, DebuffSpawnInterval);
     }
 
     public void RunSpawnsObject()
@@ -225,11 +250,18 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void RunSpawnsBuff() //버프 무작위좌표에 생성
+    public void RunSpawnsBuff() //버프아이템 무작위좌표에 생성
     {
         if (gameStopped) return;
         SpawnBuff(GetRandomBuffPrefab(), new Vector3(Random.Range(-850f, 850f), -425f, 0f), -gravityScale);
         SpawnBuff(GetRandomBuffPrefab(), new Vector3(Random.Range(-850f, 850f), 425f, 0f), gravityScale);
+    }
+
+    public void RunSpawnsDeBuff() //너프아이템 무작위좌표에 생성
+    {
+        if (gameStopped) return;
+        SpawnDeBuff(GetRandomDebuffPrefab(), new Vector3(Random.Range(-850f, 850f), -425f, 0f), -gravityScale);
+        SpawnDeBuff(GetRandomDebuffPrefab(), new Vector3(Random.Range(-850f, 850f), 425f, 0f), gravityScale);
     }
 
     //스테이지 결정
@@ -251,7 +283,6 @@ public class GameManager : MonoBehaviour
         return prefabArray[Random.Range(0, prefabArray.Length)];
     }
 
-
     private GameObject GetRandomBuffPrefab() //버프아이템 무작위결정
     {
         int buffType = Random.Range(1, 4);
@@ -262,6 +293,17 @@ public class GameManager : MonoBehaviour
             3 => HideBuffPrefab, //3은 3초무적
             _ => null
         };
+    }
+    private GameObject GetRandomDebuffPrefab() //버프아이템 무작위결정
+    {
+        int DebuffType = Random.Range(1, 3);
+        return DebuffType switch
+        {
+            1 => SpeedDebuffPrefab, //1은 속도감소 디버프
+            2 => reverseDebuffPrefab, //2는 키보드 반전 디버프
+            _ => null
+        };
+
     }
 
     //공통스폰 함수
@@ -286,13 +328,17 @@ public class GameManager : MonoBehaviour
         return moverScript;
     }
         private void SpawnObject(GameObject prefab, Vector3 position, float gravity)
-         {
-        Spawn<ObjectMover>(prefab, position, gravity);
+        {
+                 Spawn<ObjectMover>(prefab, position, gravity);
         }
 
          private void SpawnBuff(GameObject prefab, Vector3 position, float gravity)
          {
-        buffMover = Spawn<BuffMover>(prefab, position, gravity);
+              Spawn<BuffMover>(prefab, position, gravity);
+         }
+         private void SpawnDeBuff(GameObject prefab, Vector3 position, float gravity)
+         {
+               Spawn<DeBuffMover>(prefab, position, gravity);
          }
 
     public void StopGame() //게임정지시 오브젝트 생성 정지
@@ -301,6 +347,7 @@ public class GameManager : MonoBehaviour
         gameStopped = true; // 게임 정지 상태 플래그 설정
         CancelInvoke(nameof(RunSpawnsObject));
         CancelInvoke(nameof(RunSpawnsBuff));
+        CancelInvoke(nameof(RunSpawnsDeBuff));
 
         // Player 사망시 애니메이션 실행
         if (playerAnimatorA != null || playerAnimatorB != null)
@@ -348,11 +395,10 @@ public class GameManager : MonoBehaviour
         foreach (GameObject obstacle in obstacles)
         {
             Destroy(obstacle);
-
         }
 
         // 버프를 배열로 정의
-        string[] buffTags = { "SpeedBuff", "ShieldBuff", "HideBuff" };
+        string[] buffTags = { "SpeedBuff", "ShieldBuff", "HideBuff","SpeedDeBuff","ReverseDeBuff" };
         //버프 제거
         foreach (string tag in buffTags)
         {
@@ -365,7 +411,7 @@ public class GameManager : MonoBehaviour
     }
 }
 
-public class ObjectMover : MonoBehaviour
+public class ObjectMover : MonoBehaviour  //장애물 충돌관리
 {
     public GameManager spawnerScript;
     private bool isExploding = false; // explosion 상태 플래그
@@ -462,7 +508,7 @@ public class ObjectMover : MonoBehaviour
     }
 }
 
-public class BuffMover : MonoBehaviour
+public class BuffMover : MonoBehaviour //버프 충돌 관리
 {
     public GameManager spawnerScript;
 
@@ -479,20 +525,12 @@ public class BuffMover : MonoBehaviour
 
             SoundManager soundManager = FindObjectOfType<SoundManager>(); // SoundManager 찾기
 
-            // 은신 상태와 충돌 처리
-            if (playerController.IsPlayerHide(isPlayerA) && !CompareTag("SpeedBuff") && !CompareTag("ShieldBuff") && !CompareTag("HideBuff"))
-            {
-                Debug.Log("은신 상태로 장애물 무시");
-                Destroy(gameObject); // 장애물 제거
-                return;
-            }
-
             if (CompareTag("SpeedBuff"))
             {
-                // 스피드 버프 코루틴 관리
-                playerController.StartManagedCoroutine(
-                    playerController.activeSpeedBuffCoroutines, isPlayerA,
-                     playerController.ApplySpeedBuff(playerController, isPlayerA)
+                // 속도 버프 코루틴만 중지 후 시작
+                playerController.StartSpeedCoroutine(
+                    playerController.ApplySpeedBuff(playerController, isPlayerA),
+                    isPlayerA
                 );
 
                 soundManager.PlaySpeedBuffSound(); // 속도 버프 사운드 재생
@@ -502,10 +540,11 @@ public class BuffMover : MonoBehaviour
             else if (CompareTag("HideBuff"))
             {
                 float hideBuffDuration = 3f; // 은신 버프 지속 시간 (초)
-                // 은신 버프 코루틴 관리
-                playerController.StartManagedCoroutine(
-                    playerController.activeHideBuffCoroutines, isPlayerA,
-                     playerController.ApplyHideBuff(hideBuffDuration, isPlayerA)
+
+                // 은신 버프는 속도 버프와 독립적으로 관리
+                playerController.StartHideCoroutine(
+                    playerController.ApplyHideBuff(hideBuffDuration, isPlayerA),
+                    isPlayerA
                 );
 
                 soundManager.PlayHideBuffSound(); // 은신 버프 사운드 재생
@@ -530,37 +569,64 @@ public class BuffMover : MonoBehaviour
             Destroy(gameObject);
         }
 
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            Destroy(gameObject); //바닥에 충돌하면 제거
+        }
+    }
+}
+public class DeBuffMover : MonoBehaviour //디버프 충돌 관리
+{
+    public GameManager spawnerScript;
+
+    // 충돌 처리
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        
+        if (collision.gameObject.CompareTag("Player"))
+        {
+       
+            GameObject playerManager = GameObject.Find("PlayerManager");
+
+            if (playerManager == null)
+            {
+                Debug.LogError("PlayerManager 오브젝트를 찾을 수 없습니다.");
+                return;
+            }
+
+            PlayerManager playerController = playerManager.GetComponent<PlayerManager>();
+            bool isPlayerA = collision.gameObject == playerController.playerA;
+
+            SoundManager soundManager = FindObjectOfType<SoundManager>(); // SoundManager 찾기
+            if (soundManager == null)
+            {
+                Debug.LogError("SoundManager를 찾을 수 없습니다.");
+            }
+
+            if (CompareTag("SpeedDeBuff"))
+            {
+
+
+                // 속도 디버프 코루틴만 중지 후 시작
+                playerController.StartSpeedCoroutine(
+                    playerController.ApplySpeedDeBuff(playerController, isPlayerA),
+                    isPlayerA
+                );
+
+                soundManager.PlaySpeedDeBuffSound(); // 속도 버프 사운드 재생
+                Debug.Log("스피드다운 디버프 획득");
+            }
+            else if (CompareTag("ReverseDeBuff"))
+            {
+
+            }
+            Destroy(gameObject);
+        }
 
         if (collision.gameObject.CompareTag("Ground"))
         {
             Destroy(gameObject); //바닥에 충돌하면 제거
         }
     }
-    void OnCollisionStay2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            GameObject playerManager = GameObject.Find("PlayerManager");
-            PlayerManager playerController = playerManager.GetComponent<PlayerManager>();
-            bool isPlayerA = collision.gameObject == playerController.playerA;
-
-            // 은신 상태일 때 충돌을 계속 무시
-            if (playerController.IsPlayerHide(isPlayerA) && !CompareTag("SpeedBuff") && !CompareTag("ShieldBuff") && !CompareTag("HideBuff"))
-            {
-                GameObject player = isPlayerA ? playerController.playerA : playerController.playerB;
-                Collider2D playerCollider = player.GetComponent<Collider2D>();
-
-                foreach (GameObject Avoid in GameObject.FindGameObjectsWithTag("Avoid"))
-                {
-                    Collider2D obstacleCollider = Avoid.GetComponent<Collider2D>();
-                    if (obstacleCollider != null)
-                    {
-                        Physics2D.IgnoreCollision(playerCollider, obstacleCollider, true);
-                    }
-                }
-            }
-        }
-    }
-
-   
 }
+

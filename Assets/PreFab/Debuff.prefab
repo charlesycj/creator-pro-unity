@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 8518210516271547289}
   - component: {fileID: -2546200218940811020}
   m_Layer: 0
-  m_Name: avoid
-  m_TagString: Avoid
+  m_Name: Debuff
+  m_TagString: reverse
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

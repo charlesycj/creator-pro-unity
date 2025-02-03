@@ -10,6 +10,8 @@ TagManager:
   - ShieldBuff
   - Avoid
   - Score
+  - SpeedDeBuff
+  - ReverseDeBuff
   layers:
   - Default
   - TransparentFX
