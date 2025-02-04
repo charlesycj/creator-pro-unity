@@ -988,7 +988,7 @@ MonoBehaviour:
   HideBuffSound: {fileID: 8300000, guid: 3e50a71b74cc48d44b3302be43de350e, type: 3}
   ShieldBuffSound: {fileID: 8300000, guid: 3e50a71b74cc48d44b3302be43de350e, type: 3}
   SpeedDeBuffSound: {fileID: 8300000, guid: 3e50a71b74cc48d44b3302be43de350e, type: 3}
-  reverseDeBuffSound: {fileID: 8300000, guid: 3e50a71b74cc48d44b3302be43de350e, type: 3}
+  ReverseDeBuffSound: {fileID: 8300000, guid: 3e50a71b74cc48d44b3302be43de350e, type: 3}
   GameOverSound: {fileID: 8300000, guid: 4151da4f118ba5a40bf5dd93cabbe66d, type: 3}
   LevelTransition: {fileID: 8300000, guid: bec84870b4234a64a8c4dfc39c69caf9, type: 3}
   RemoveShield: {fileID: 8300000, guid: beb23743489b9fe47b4ffac2074c1c87, type: 3}
@@ -3883,7 +3883,7 @@ MonoBehaviour:
   ShieldBuffPrefab: {fileID: 1319792513950287898, guid: 0bcf4dbfebe61314f854e18f257b35d1, type: 3}
   HideBuffPrefab: {fileID: 278405073897186629, guid: 8527b70ef4694324e8e132bb524c3665, type: 3}
   SpeedDebuffPrefab: {fileID: 965999702418789783, guid: e80fdc25113d0774491bd31021125b5a, type: 3}
-  reverseDebuffPrefab: {fileID: 7323223141508106944, guid: 253c6087b7df29245a8423fb93bceb2e, type: 3}
+  ReverseDebuffPrefab: {fileID: 4793683432889719947, guid: 574c0a0fba01bf140bde78756d9facb8, type: 3}
   scorePrefab: {fileID: 1468520438}
   scoreTextMesh1: {fileID: 1468520440}
   scoreTextMesh2: {fileID: 1311304613}
@@ -3893,11 +3893,11 @@ MonoBehaviour:
   objectSpawnInterval: 3
   minobjectSpawnInterval: 0.2
   spawnIntervalStep: 0.1
-  buffSpawnInterval: 1
-  minbuffSpawnInterval: 1
+  buffSpawnInterval: 4
+  minbuffSpawnInterval: 2.5
   buffspawnIntervalStep: 0.05
-  DebuffSpawnInterval: 1
-  minDebuffSpawnInterval: 1
+  DebuffSpawnInterval: 4
+  minDebuffSpawnInterval: 2.5
   DebuffspawnIntervalStep: 0.05
   gravityScale: 20
   soundManager: {fileID: 287309664}

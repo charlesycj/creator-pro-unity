@@ -11,6 +11,8 @@ public class PlayerManager : MonoBehaviour
 
     private Dictionary<bool, Coroutine> speedBuffCoroutines = new Dictionary<bool, Coroutine>();
     private Dictionary<bool, Coroutine> hideBuffCoroutines = new Dictionary<bool, Coroutine>();
+    private Dictionary<bool, Coroutine> ReverseDeBuffCoroutines = new Dictionary<bool, Coroutine>();
+   
 
     [Header("Player A Settings")]
     public GameObject playerA; // Player A 오브젝트
@@ -212,6 +214,39 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
+    public void SetPlayerReverse(bool isReverse, bool isPlayerA, float duration = 0f)
+    {
+
+        if (isReverse)
+        {
+            // 이미 반전된 상태라면 기존 상태를 그대로 유지
+            if (isPlayerA)
+            {
+                (playerALeftKey, playerARightKey) = (KeyCode.D, KeyCode.A);
+                Debug.Log("A 플레이어 키보드 반전 적용됨");
+            }
+            else
+            {
+                (playerBLeftKey, playerBRightKey) = (KeyCode.RightArrow, KeyCode.LeftArrow);
+                Debug.Log("B 플레이어 키보드 반전 적용됨");
+            }
+        }
+        else
+        {
+            // 반전 상태 해제
+            if (isPlayerA)
+            {
+                (playerALeftKey, playerARightKey) = (KeyCode.A, KeyCode.D);
+                Debug.Log("A 플레이어 키보드 반전 해제됨");
+            }
+            else
+            {
+                (playerBLeftKey, playerBRightKey) = (KeyCode.LeftArrow, KeyCode.RightArrow);
+                Debug.Log("B 플레이어 키보드 반전 해제됨");
+            }
+        }
+    }
+    
 
     // 은신 상태 동안 충돌 무시를 지속적으로 유지하는 코루틴
     private IEnumerator KeepCollisionIgnoredDuringHide(float duration, Collider2D playerCollider)
@@ -272,6 +307,21 @@ public class PlayerManager : MonoBehaviour
         // 새 코루틴 실행
         Coroutine newCoroutine = StartCoroutine(coroutineMethod);
         hideBuffCoroutines[isPlayerA] = newCoroutine;
+    }
+
+    //키보드 반전 코루틴 관리
+    public void StartReverseDeBuffCoroutine(IEnumerator coroutineMethod, bool isPlayerA)
+    {
+        //기존 키보드 반전 코루틴 중지
+        if (ReverseDeBuffCoroutines.ContainsKey(isPlayerA) && ReverseDeBuffCoroutines[isPlayerA] != null)
+        {
+            StopCoroutine(ReverseDeBuffCoroutines[isPlayerA]);
+        }
+
+
+        // 새 코루틴 실행
+        Coroutine newCoroutine = StartCoroutine(coroutineMethod);
+        ReverseDeBuffCoroutines[isPlayerA] = newCoroutine;
     }
 
     // 스피드업 버프 적용
@@ -397,22 +447,34 @@ public class PlayerManager : MonoBehaviour
         //남은 은신시간 측정s
         while (remainingTime > 0)
         {
-            if (isPlayerA)
-            {
-                Debug.Log($"A캐릭터의 은신 효과 남은 시간: {remainingTime:F2}초");
-                yield return new WaitForSeconds(0.5f); // 0.5초 간격으로 업데이트
-                remainingTime -= 0.5f;
-            }
-            else if (!isPlayerA)
-            {
-                Debug.Log($"B캐릭터의 은신 효과 남은 시간: {remainingTime:F2}초");
-                yield return new WaitForSeconds(0.5f); // 0.5초 간격으로 업데이트
-                remainingTime -= 0.5f;
-            }
+            Debug.Log($"{(isPlayerA ? "A캐릭터" : "B캐릭터")}" +
+                   $"의 은신 효과 남은 시간: {remainingTime:F2}초");
+            yield return new WaitForSeconds(0.5f); // 0.5초 간격으로 업데이트
+            remainingTime -= 0.5f;   
         }
 
         // 은신 상태 비활성화
         playerController.SetPlayerHide(false, isPlayerA, duration);
     }
+    public IEnumerator ApplyReverseDeBuff(float duration, bool isPlayerA)
+    {
+        GameObject playerManager = GameObject.Find("PlayerManager");
+        PlayerManager playerController = playerManager.GetComponent<PlayerManager>();
+
+        // 키보드반전 상태 활성화
+        playerController.SetPlayerReverse(true, isPlayerA, duration);
+
+        float remainingTime = duration;
+
+        // 반전된 키 상태 유지 및 남은 시간 체크
+        while (remainingTime > 0)
+        {
+                Debug.Log($"{(isPlayerA ? "A캐릭터" : "B캐릭터")}" +
+                    $"의 키보드 반전 효과 남은 시간: {remainingTime:F2}초");
+                yield return new WaitForSeconds(0.5f); // 0.5초 간격으로 업데이트
+                remainingTime -= 0.5f;     
+        }
+        //키보드 반전 상태 해제
+        playerController.SetPlayerReverse(false, isPlayerA, duration);
+    }
 }
-  

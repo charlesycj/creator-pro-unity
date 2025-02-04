@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject HideBuffPrefab; // 3초무적
 
     [SerializeField] private GameObject SpeedDebuffPrefab; //스피드감소
-    [SerializeField] private GameObject reverseDebuffPrefab; //스피드감소
+    [SerializeField] private GameObject ReverseDebuffPrefab; //스피드감소
     
     [SerializeField] public GameObject scorePrefab; // Score 프리팹 참조
     [SerializeField] private TextMeshProUGUI scoreTextMesh1; //현재 점수 텍스트
@@ -300,7 +300,7 @@ public class GameManager : MonoBehaviour
         return DebuffType switch
         {
             1 => SpeedDebuffPrefab, //1은 속도감소 디버프
-            2 => reverseDebuffPrefab, //2는 키보드 반전 디버프
+            2 => ReverseDebuffPrefab, //2는 키보드 반전 디버프
             _ => null
         };
 
@@ -541,7 +541,7 @@ public class BuffMover : MonoBehaviour //버프 충돌 관리
             {
                 float hideBuffDuration = 3f; // 은신 버프 지속 시간 (초)
 
-                // 은신 버프는 속도 버프와 독립적으로 관리
+
                 playerController.StartHideCoroutine(
                     playerController.ApplyHideBuff(hideBuffDuration, isPlayerA),
                     isPlayerA
@@ -603,10 +603,8 @@ public class DeBuffMover : MonoBehaviour //디버프 충돌 관리
                 Debug.LogError("SoundManager를 찾을 수 없습니다.");
             }
 
-            if (CompareTag("SpeedDeBuff"))
+            if (CompareTag("SpeedDeBuff")) //속도 감소 획득
             {
-
-
                 // 속도 디버프 코루틴만 중지 후 시작
                 playerController.StartSpeedCoroutine(
                     playerController.ApplySpeedDeBuff(playerController, isPlayerA),
@@ -616,9 +614,17 @@ public class DeBuffMover : MonoBehaviour //디버프 충돌 관리
                 soundManager.PlaySpeedDeBuffSound(); // 속도 버프 사운드 재생
                 Debug.Log("스피드다운 디버프 획득");
             }
-            else if (CompareTag("ReverseDeBuff"))
+            else if (CompareTag("ReverseDeBuff")) //키보드 반전 획득
             {
+                //키보드 반전 디버프 획득
+                float ReverseDeBuffDuration = 5f;  //지속시간
+                playerController.StartReverseDeBuffCoroutine(
+                   playerController.ApplyReverseDeBuff(ReverseDeBuffDuration, isPlayerA),
+                   isPlayerA
+               );
 
+                soundManager.PlayReverseDeBuffSound(); //키보드 반전 사운드 재생
+                Debug.Log("키보드 반전 디버프 획득");
             }
             Destroy(gameObject);
         }

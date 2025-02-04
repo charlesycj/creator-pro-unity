@@ -8,7 +8,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip ShieldBuffSound;
 
     public AudioClip SpeedDeBuffSound;
-    public AudioClip reverseDeBuffSound;
+    public AudioClip ReverseDeBuffSound;
 
     public AudioClip GameOverSound;
     public AudioClip LevelTransition;
@@ -52,6 +52,10 @@ public class SoundManager : MonoBehaviour
     public void PlaySpeedDeBuffSound()
     {
         PlaySound(SpeedDeBuffSound);
+    }
+    public void PlayReverseDeBuffSound()
+    {
+        PlaySound(ReverseDeBuffSound);
     }
     public void playLevelTransition()
     {
