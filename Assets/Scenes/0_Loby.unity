@@ -1485,6 +1485,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01c5bdd09a7cd3c45847d29b22380c0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  setWidth: 1920
+  setHeight: 1080
 --- !u!4 &1081616022
 Transform:
   m_ObjectHideFlags: 0
@@ -1968,7 +1970,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1000, y: 620}
+  m_SizeDelta: {x: 1646, y: 958}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1630197634
 MonoBehaviour:
@@ -1990,7 +1992,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2596552556267567030, guid: 24c0277b6d7fa2b4686396095381dc3e, type: 3}
+  m_Sprite: {fileID: 855067733875592807, guid: b81362897278b954a8ffc4f22b2413dc, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
