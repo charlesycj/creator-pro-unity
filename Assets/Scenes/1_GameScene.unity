@@ -3882,8 +3882,8 @@ MonoBehaviour:
   SpeedBuffPrefab: {fileID: 7105082956661526811, guid: 6e38ad166ab73974e981100be35ad4aa, type: 3}
   ShieldBuffPrefab: {fileID: 1319792513950287898, guid: 0bcf4dbfebe61314f854e18f257b35d1, type: 3}
   HideBuffPrefab: {fileID: 278405073897186629, guid: 8527b70ef4694324e8e132bb524c3665, type: 3}
-  SpeedDebuffPrefab: {fileID: 965999702418789783, guid: e80fdc25113d0774491bd31021125b5a, type: 3}
-  ReverseDebuffPrefab: {fileID: 4793683432889719947, guid: 574c0a0fba01bf140bde78756d9facb8, type: 3}
+  SpeedDebuffPrefab: {fileID: 3085124237605791442, guid: 2759d37f0d45da54db3774245f9e4ebf, type: 3}
+  ReverseDebuffPrefab: {fileID: 1846769719442705386, guid: 5985a9d64ef961945a6a4aaf675582d5, type: 3}
   scorePrefab: {fileID: 1468520438}
   scoreTextMesh1: {fileID: 1468520440}
   scoreTextMesh2: {fileID: 1311304613}
