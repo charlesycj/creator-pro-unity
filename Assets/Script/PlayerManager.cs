@@ -51,6 +51,9 @@ public class PlayerManager : MonoBehaviour
     public GameObject playerShieldA; // ½¯µåA
     public GameObject playerShieldB; // ½¯µåB
 
+    public GameObject playerConfusionA;
+    public GameObject playerConfusionB;
+
     public SoundManager soundManager; // SoundManager ÂüÁ¶
 
     void Start()

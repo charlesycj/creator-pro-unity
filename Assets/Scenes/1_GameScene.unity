@@ -2552,18 +2552,20 @@ MonoBehaviour:
   playerASpeed: 400
   playerALeftKey: 97
   playerARightKey: 100
-  playerAHide: 1
+  playerAHide: 0
   playerAHasShield: 0
   playerB: {fileID: 535716411}
   playerBSpeed: 400
   playerBLeftKey: 276
   playerBRightKey: 275
-  playerBHide: 1
+  playerBHide: 0
   playerBHasShield: 0
   ground: {fileID: 812319685}
   DeadPlayer: 
   playerShieldA: {fileID: 1266308895}
   playerShieldB: {fileID: 1797898800}
+  playerConfusionA: {fileID: 0}
+  playerConfusionB: {fileID: 0}
   soundManager: {fileID: 287309664}
 --- !u!1 &976950591
 GameObject:
