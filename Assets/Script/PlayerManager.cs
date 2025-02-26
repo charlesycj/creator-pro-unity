@@ -227,11 +227,13 @@ public class PlayerManager : MonoBehaviour
             {
                 (playerALeftKey, playerARightKey) = (KeyCode.D, KeyCode.A);
                 Debug.Log("A 플레이어 키보드 반전 적용됨");
+                playerConfusionA.SetActive(true);
             }
             else
             {
                 (playerBLeftKey, playerBRightKey) = (KeyCode.RightArrow, KeyCode.LeftArrow);
                 Debug.Log("B 플레이어 키보드 반전 적용됨");
+                playerConfusionB.SetActive(true);
             }
         }
         else
@@ -241,11 +243,13 @@ public class PlayerManager : MonoBehaviour
             {
                 (playerALeftKey, playerARightKey) = (KeyCode.A, KeyCode.D);
                 Debug.Log("A 플레이어 키보드 반전 해제됨");
+                playerConfusionA.SetActive(false);
             }
             else
             {
                 (playerBLeftKey, playerBRightKey) = (KeyCode.LeftArrow, KeyCode.RightArrow);
                 Debug.Log("B 플레이어 키보드 반전 해제됨");
+                playerConfusionB.SetActive(false);
             }
         }
     }
