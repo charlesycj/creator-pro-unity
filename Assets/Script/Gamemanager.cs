@@ -149,11 +149,21 @@ public class GameManager : MonoBehaviour
         // 1분마다 스테이지 전환
         if (timeElapsed >= 60f)
         {
-            gravityScale += 5f;
-            timeElapsed = 0f; 
-            currentStage = currentStage == 3 ? 1 : currentStage + 1;
-            soundManager.playLevelTransition();
-            soundManager.PlayStageBGM(currentStage);
+            gravityScale += 10f;
+            timeElapsed = 0f;
+
+            if (currentStage != 3)
+            {
+                currentStage++;
+                soundManager.playLevelTransition();
+                soundManager.PlayStageBGM(currentStage);
+            }
+
+            // 스테이지 3의 BGM이 끝난 경우에만 다시 재생
+            if (currentStage == 3 && !soundManager.IsStageBGMPlaying(currentStage))
+            {
+                soundManager.PlayStageBGM(3);
+            }
 
             // 오브젝트 생성 재설정
             ResetObjectSpawns();
@@ -617,7 +627,7 @@ public class DeBuffMover : MonoBehaviour //디버프 충돌 관리
             else if (CompareTag("ReverseDeBuff")) //키보드 반전 획득
             {
                 //키보드 반전 디버프 획득
-                float ReverseDeBuffDuration = 5f;  //지속시간
+                float ReverseDeBuffDuration = 2f;  //지속시간
                 playerController.StartReverseDeBuffCoroutine(
                    playerController.ApplyReverseDeBuff(ReverseDeBuffDuration, isPlayerA),
                    isPlayerA

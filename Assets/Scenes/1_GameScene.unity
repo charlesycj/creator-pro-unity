@@ -996,6 +996,7 @@ MonoBehaviour:
   stage1BGM: {fileID: 8300000, guid: 5b2e180e26a7d59428cbc0a6a2a59774, type: 3}
   stage2BGM: {fileID: 8300000, guid: 6b77dae194558f246bdfd2aa0c06007a, type: 3}
   stage3BGM: {fileID: 8300000, guid: b4d15cfc9a947e044baa76c11a9af38c, type: 3}
+  soundManager: {fileID: 287309664}
 --- !u!82 &287309665
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2554,13 +2555,13 @@ MonoBehaviour:
   playerASpeed: 400
   playerALeftKey: 97
   playerARightKey: 100
-  playerAHide: 0
+  playerAHide: 1
   playerAHasShield: 0
   playerB: {fileID: 535716411}
   playerBSpeed: 400
   playerBLeftKey: 276
   playerBRightKey: 275
-  playerBHide: 0
+  playerBHide: 1
   playerBHasShield: 0
   ground: {fileID: 812319685}
   DeadPlayer: 
@@ -4012,7 +4013,7 @@ MonoBehaviour:
   DebuffSpawnInterval: 2
   minDebuffSpawnInterval: 1.5
   DebuffspawnIntervalStep: 0.1
-  gravityScale: 20
+  gravityScale: 30
   soundManager: {fileID: 287309664}
   gameStopped: 0
   currentStage: 1

@@ -18,6 +18,8 @@ public class SoundManager : MonoBehaviour
     public AudioClip stage2BGM;
     public AudioClip stage3BGM;
 
+    [SerializeField] private SoundManager soundManager;
+
     private void Awake()
     {
         if (audioSource == null) // audioSource가 Inspector에서 할당되지 않았을 경우 초기화
@@ -29,6 +31,16 @@ public class SoundManager : MonoBehaviour
             }
         }
     }
+
+    public bool IsStageBGMPlaying(int stage)
+    {
+        AudioClip stageBGM = stage == 1 ? stage1BGM :
+                             stage == 2 ? stage2BGM :
+                             stage == 3 ? stage3BGM : null;
+
+        return audioSource.clip == stageBGM && audioSource.isPlaying;
+    }
+
     // 사운드 재생
     public void PlaySpeedBuffSound()
     {
