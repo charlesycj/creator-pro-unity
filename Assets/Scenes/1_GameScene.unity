@@ -988,8 +988,8 @@ MonoBehaviour:
   SpeedBuffSound: {fileID: 8300000, guid: 3e50a71b74cc48d44b3302be43de350e, type: 3}
   HideBuffSound: {fileID: 8300000, guid: 3e50a71b74cc48d44b3302be43de350e, type: 3}
   ShieldBuffSound: {fileID: 8300000, guid: 3e50a71b74cc48d44b3302be43de350e, type: 3}
-  SpeedDeBuffSound: {fileID: 8300000, guid: 3e50a71b74cc48d44b3302be43de350e, type: 3}
-  ReverseDeBuffSound: {fileID: 8300000, guid: 3e50a71b74cc48d44b3302be43de350e, type: 3}
+  SpeedDeBuffSound: {fileID: 8300000, guid: 1a07c0824acee2a439d16e9b11d4ddb3, type: 3}
+  ReverseDeBuffSound: {fileID: 8300000, guid: c0598d075e862244fb1d919d0c3f0a5a, type: 3}
   GameOverSound: {fileID: 8300000, guid: 4151da4f118ba5a40bf5dd93cabbe66d, type: 3}
   LevelTransition: {fileID: 8300000, guid: bec84870b4234a64a8c4dfc39c69caf9, type: 3}
   RemoveShield: {fileID: 8300000, guid: beb23743489b9fe47b4ffac2074c1c87, type: 3}
@@ -2554,13 +2554,13 @@ MonoBehaviour:
   playerASpeed: 400
   playerALeftKey: 97
   playerARightKey: 100
-  playerAHide: 1
+  playerAHide: 0
   playerAHasShield: 0
   playerB: {fileID: 535716411}
   playerBSpeed: 400
   playerBLeftKey: 276
   playerBRightKey: 275
-  playerBHide: 1
+  playerBHide: 0
   playerBHasShield: 0
   ground: {fileID: 812319685}
   DeadPlayer: 
