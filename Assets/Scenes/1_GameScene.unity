@@ -4003,15 +4003,15 @@ MonoBehaviour:
   bestScoreTextMesh: {fileID: 280660040}
   playerAnimatorA: {fileID: 69246877}
   playerAnimatorB: {fileID: 535716418}
-  objectSpawnInterval: 3
+  objectSpawnInterval: 1
   minobjectSpawnInterval: 0.2
-  spawnIntervalStep: 0.1
-  buffSpawnInterval: 4
+  spawnIntervalStep: 0.025
+  buffSpawnInterval: 3
   minbuffSpawnInterval: 2.5
-  buffspawnIntervalStep: 0.05
-  DebuffSpawnInterval: 4
-  minDebuffSpawnInterval: 2.5
-  DebuffspawnIntervalStep: 0.05
+  buffspawnIntervalStep: 0.1
+  DebuffSpawnInterval: 2
+  minDebuffSpawnInterval: 1.5
+  DebuffspawnIntervalStep: 0.1
   gravityScale: 20
   soundManager: {fileID: 287309664}
   gameStopped: 0

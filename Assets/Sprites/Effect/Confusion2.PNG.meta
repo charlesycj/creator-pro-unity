@@ -143,7 +143,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Confusion2_0: -6349009785554668345
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
