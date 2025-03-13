@@ -23,6 +23,7 @@ public class GameButtonManager : MonoBehaviour
     public void ExitGame()
     {
         // 누르면 메뉴로 이동
+        Time.timeScale = 1f; // 게임 속도를 정상으로 되돌림
         SceneManager.LoadScene("0_Loby");
     }
 
@@ -62,6 +63,7 @@ public class GameButtonManager : MonoBehaviour
     public void QuitGame()
     {
         // 누르면 메뉴로 이동
+        Time.timeScale = 1f; // 게임 속도를 정상으로 되돌림
         SceneManager.LoadScene("0_Loby");
     }
 }
